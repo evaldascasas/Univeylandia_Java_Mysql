@@ -7,7 +7,7 @@ package classes;
 
 /**
  *
- * @author alumne
+ * @@Evaldas Casas, Jose Febrer, Ferran Climent / GRUP-2 - Gestio d'atracions del parc
  */
 public class Atraccio {
     
