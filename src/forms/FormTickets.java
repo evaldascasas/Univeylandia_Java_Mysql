@@ -62,6 +62,11 @@ public class FormTickets extends javax.swing.JFrame {
         editBtn.setText("Modificar");
 
         deleteBtn.setText("Eliminar");
+        deleteBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                deleteBtnActionPerformed(evt);
+            }
+        });
 
         jButton4.setText("Enrere");
 
@@ -106,6 +111,43 @@ public class FormTickets extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void deleteBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteBtnActionPerformed
+        // TODO add your handling code here:
+        int columna = 0;
+        int fila = resultats.getSelectedRow();
+        String id_seleccionat = resultats.getModel().getValueAt(columna, fila).toString();
+        int dialogResult = -1;
+        System.out.println(id_seleccionat);
+        int dialogButton = JOptionPane.YES_NO_OPTION;
+        dialogResult = JOptionPane.showConfirmDialog(null, "Estas segur de que vols eliminar el empleat " + "?", "CONFIRMACIO", dialogButton);
+        if(dialogResult == 0) {
+            try{
+                statement = DBConnection.getConnection().createStatement();
+                if (statement.getUpdateCount() != 0) {
+                    ResultSet atributs_sql = statement.executeQuery("select ap.id from productes p left join atributs_producte ap on p.atributs = ap.id where p.id = " + id_seleccionat + ";");
+                    int val =  ((Number) atributs_sql.getObject(0)).intValue();
+                    System.out.println(val);
+                    String eliminar_atributs_sql = "delete from atributs_producte where id = " + val + ";";
+                    String eliminar_producte_sql = "delete from atributs_producte where id = " + id_seleccionat + ";";
+                    statement.executeUpdate(eliminar_atributs_sql);
+                    statement.executeUpdate(eliminar_producte_sql);
+                    statement.close();
+                    DBConnection.disconnect();
+                    JOptionPane.showMessageDialog(this, "Producte eliminat correctament");
+                    llistar_tickets();
+                }else {
+                    JOptionPane.showMessageDialog(this, statement.getUpdateCount());
+                }
+            }catch (SQLException e){
+                System.out.println(e.getMessage());
+                JOptionPane.showMessageDialog(this, e);
+            }
+            
+        }else{
+            
+        }
+    }//GEN-LAST:event_deleteBtnActionPerformed
 
     /**
      * @param args the command line arguments
