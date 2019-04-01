@@ -42,7 +42,6 @@ public class FormTickets extends javax.swing.JFrame {
 
         jScrollPane1 = new javax.swing.JScrollPane();
         resultats = new javax.swing.JTable();
-        insertBtn = new javax.swing.JButton();
         editBtn = new javax.swing.JButton();
         deleteBtn = new javax.swing.JButton();
         jButton4 = new javax.swing.JButton();
@@ -59,8 +58,6 @@ public class FormTickets extends javax.swing.JFrame {
             }
         ));
         jScrollPane1.setViewportView(resultats);
-
-        insertBtn.setText("Inserir");
 
         editBtn.setText("Modificar");
 
@@ -81,9 +78,7 @@ public class FormTickets extends javax.swing.JFrame {
                         .addComponent(jLabel1)
                         .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(37, 37, 37)
-                        .addComponent(insertBtn)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGap(110, 110, 110)
                         .addComponent(editBtn)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(deleteBtn)
@@ -101,7 +96,6 @@ public class FormTickets extends javax.swing.JFrame {
                 .addComponent(jLabel1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(insertBtn)
                     .addComponent(editBtn)
                     .addComponent(deleteBtn)
                     .addComponent(jButton4))
@@ -192,7 +186,6 @@ public class FormTickets extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton deleteBtn;
     private javax.swing.JButton editBtn;
-    private javax.swing.JButton insertBtn;
     private javax.swing.JButton jButton4;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane jScrollPane1;
