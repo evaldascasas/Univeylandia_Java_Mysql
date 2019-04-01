@@ -5,18 +5,30 @@
  */
 package forms;
 import connection.DBConnection;
+import java.sql.SQLException;
+import java.sql.Statement;
+import javax.swing.JOptionPane;
 
 /**
  *
  * @author alumne
  */
 public class FormTickets extends javax.swing.JFrame {
+    Statement statement = null;
+    String llistar_tickets_sql = "select tp.nom, p.descripcio, ap.mida, ap.tickets_viatges, ap.preu, p.estat from productes p left join atributs_producte ap on p.atributs = ap.id left join tipus_producte tp on ap.nom = tp.id where tp.id in (1,2,3,4,5,6,7) order by p.id desc";
 
     /**
      * Creates new form FormTickets
      */
     public FormTickets() {
-        DBConnection.getConnection();
+        try{
+            statement = DBConnection.getConnection().createStatement();
+            
+        }catch (SQLException e){
+            System.out.println(e.getMessage());
+            JOptionPane.showMessageDialog(this, e);
+        }
+        
         initComponents();
     }
 
