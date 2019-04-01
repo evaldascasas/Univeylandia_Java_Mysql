@@ -29,7 +29,7 @@ public class DBConnection {
         return conn;
     }
 
-    public void disconnect() {                                                                      // Metode per desconectar la conexio
+    public static void disconnect() {                                                                      // Metode per desconectar la conexio
         try {
             conn.close();
         } catch (Exception ex) {

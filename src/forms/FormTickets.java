@@ -5,18 +5,65 @@
  */
 package forms;
 import connection.DBConnection;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
 
 /**
  *
  * @author alumne
  */
 public class FormTickets extends javax.swing.JFrame {
+    Statement statement = null;
+    ResultSet resultSet = null;
+    String llistar_tickets_sql = "select tp.nom, p.descripcio, ap.mida, ap.tickets_viatges, ap.preu, p.estat from productes p left join atributs_producte ap on p.atributs = ap.id left join tipus_producte tp on ap.nom = tp.id where tp.id in (1,2,3,4,5,6,7) order by p.id desc";
 
     /**
      * Creates new form FormTickets
      */
     public FormTickets() {
-        DBConnection.getConnection();
+        try{
+            statement = DBConnection.getConnection().createStatement();
+            ArrayList columnNames = new ArrayList();
+            resultSet = statement.executeQuery(llistar_tickets_sql);
+                ResultSetMetaData md = resultSet.getMetaData();
+                int columnCount = md.getColumnCount();
+                for (int i = 1; i <= columnCount; i++) {
+                    columnNames.add(md.getColumnName(i));
+                }
+                DefaultTableModel model = new DefaultTableModel();
+                resultats.setModel(model);
+
+                for (int i = 0; i < columnNames.size(); i++) {
+                    model.addColumn(columnNames.get(i));
+                }
+                
+                while (resultSet.next()) {
+                    Object[] row = new Object[columnCount];
+                    for (int i = 0; i < columnCount; ++i) {
+                        row[i] = resultSet.getObject(i + 1);
+                    }
+                    model.addRow(row);
+                }
+                resultSet.close();
+            
+        }catch (SQLException e){
+            System.out.println(e.getMessage());
+            JOptionPane.showMessageDialog(this, e);
+        } finally {
+            try {
+                statement.close();
+                DBConnection.disconnect();
+            } catch (SQLException e) {
+                System.out.println(e.getMessage());
+                JOptionPane.showMessageDialog(this, e);
+            }
+        }
+        
         initComponents();
     }
 
