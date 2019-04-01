@@ -20,7 +20,7 @@ import javax.swing.table.DefaultTableModel;
 public class FormTickets extends javax.swing.JFrame {
     Statement statement = null;
     ResultSet resultSet = null;
-    String llistar_tickets_sql = "select tp.nom, p.descripcio, ap.mida, ap.tickets_viatges, ap.preu, p.estat from productes p left join atributs_producte ap on p.atributs = ap.id left join tipus_producte tp on ap.nom = tp.id where tp.id in (1,2,3,4,5,6,7) order by p.id desc";
+    String llistar_tickets_sql = "select p.id, tp.nom, p.descripcio, ap.mida, ap.tickets_viatges, ap.preu, p.estat from productes p left join atributs_producte ap on p.atributs = ap.id left join tipus_producte tp on ap.nom = tp.id where tp.id in (1,2,3,4,5,6,7) order by p.id desc limit 5000";
 
     /**
      * Creates new form FormTickets
@@ -28,6 +28,7 @@ public class FormTickets extends javax.swing.JFrame {
     public FormTickets() {
         initComponents();
         llistar_tickets();
+        this.setExtendedState(this.MAXIMIZED_BOTH);
     }
 
     /**
@@ -143,6 +144,7 @@ public class FormTickets extends javax.swing.JFrame {
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 new FormTickets().setVisible(true);
+                
             }
         });
     }
