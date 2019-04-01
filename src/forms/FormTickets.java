@@ -26,45 +26,8 @@ public class FormTickets extends javax.swing.JFrame {
      * Creates new form FormTickets
      */
     public FormTickets() {
-        try{
-            statement = DBConnection.getConnection().createStatement();
-            ArrayList columnNames = new ArrayList();
-            resultSet = statement.executeQuery(llistar_tickets_sql);
-                ResultSetMetaData md = resultSet.getMetaData();
-                int columnCount = md.getColumnCount();
-                for (int i = 1; i <= columnCount; i++) {
-                    columnNames.add(md.getColumnName(i));
-                }
-                DefaultTableModel model = new DefaultTableModel();
-                resultats.setModel(model);
-
-                for (int i = 0; i < columnNames.size(); i++) {
-                    model.addColumn(columnNames.get(i));
-                }
-                
-                while (resultSet.next()) {
-                    Object[] row = new Object[columnCount];
-                    for (int i = 0; i < columnCount; ++i) {
-                        row[i] = resultSet.getObject(i + 1);
-                    }
-                    model.addRow(row);
-                }
-                resultSet.close();
-            
-        }catch (SQLException e){
-            System.out.println(e.getMessage());
-            JOptionPane.showMessageDialog(this, e);
-        } finally {
-            try {
-                statement.close();
-                DBConnection.disconnect();
-            } catch (SQLException e) {
-                System.out.println(e.getMessage());
-                JOptionPane.showMessageDialog(this, e);
-            }
-        }
-        
         initComponents();
+        llistar_tickets();
     }
 
     /**
@@ -123,13 +86,12 @@ public class FormTickets extends javax.swing.JFrame {
                         .addComponent(editBtn)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(deleteBtn)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jButton4)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 51, Short.MAX_VALUE)
+                        .addComponent(jButton4))
+                    .addGroup(layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)))
                 .addContainerGap())
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 375, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(19, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -143,8 +105,8 @@ public class FormTickets extends javax.swing.JFrame {
                     .addComponent(deleteBtn)
                     .addComponent(jButton4))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 275, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 275, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
         pack();
@@ -183,6 +145,46 @@ public class FormTickets extends javax.swing.JFrame {
                 new FormTickets().setVisible(true);
             }
         });
+    }
+    
+    public void llistar_tickets(){
+        try{
+            statement = DBConnection.getConnection().createStatement();
+            ArrayList columnNames = new ArrayList();
+            resultSet = statement.executeQuery(llistar_tickets_sql);
+                ResultSetMetaData md = resultSet.getMetaData();
+                int columnCount = md.getColumnCount();
+                for (int i = 1; i <= columnCount; i++) {
+                    columnNames.add(md.getColumnName(i));
+                }
+                DefaultTableModel model = new DefaultTableModel();
+                resultats.setModel(model);
+
+                for (int i = 0; i < columnNames.size(); i++) {
+                    model.addColumn(columnNames.get(i));
+                }
+                
+                while (resultSet.next()) {
+                    Object[] row = new Object[columnCount];
+                    for (int i = 0; i < columnCount; ++i) {
+                        row[i] = resultSet.getObject(i + 1);
+                    }
+                    model.addRow(row);
+                }
+                resultSet.close();
+            
+        }catch (SQLException e){
+            System.out.println(e.getMessage());
+            JOptionPane.showMessageDialog(this, e);
+        } finally {
+            try {
+                statement.close();
+                DBConnection.disconnect();
+            } catch (SQLException e) {
+                System.out.println(e.getMessage());
+                JOptionPane.showMessageDialog(this, e);
+            }
+        }
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
