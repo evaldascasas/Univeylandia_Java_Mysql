@@ -9,7 +9,7 @@ import java.sql.DriverManager;                                                  
  */
 public class DBConnection {
 
-    Connection conn = null;                                                                         // Variable per la conexio de tipus Connection
+    static Connection conn = null;                                                                         // Variable per la conexio de tipus Connection
 
     static final String DB_URL = "jdbc:mysql://univeylandia.cat:3306/univeylandia_test2";           // Variable per igualar la localitzacio de la DB
     static final String DB_DRV = "com.mysql.jdbc.Driver";                                           // Variable per igualar la el driver de la DB
@@ -25,7 +25,7 @@ public class DBConnection {
         }
     }
 
-    public Connection getConnection() {                                                             // Metode per cridar a la conexio
+    public static Connection getConnection() {                                                             // Metode per cridar a la conexio
         return conn;
     }
 

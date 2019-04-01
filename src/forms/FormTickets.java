@@ -4,6 +4,7 @@
  * and open the template in the editor.
  */
 package forms;
+import connection.DBConnection;
 
 /**
  *
@@ -15,6 +16,7 @@ public class FormTickets extends javax.swing.JFrame {
      * Creates new form FormTickets
      */
     public FormTickets() {
+        DBConnection.getConnection();
         initComponents();
     }
 
