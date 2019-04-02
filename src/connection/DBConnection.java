@@ -11,10 +11,10 @@ public class DBConnection {
 
     static Connection conn = null;                                                                         // Variable per la conexio de tipus Connection
 
-    static final String DB_URL = "jdbc:mysql://82.213.236.63/univeylandia";           // Variable per igualar la localitzacio de la DB
+    static final String DB_URL = "jdbc:mysql://IP/DB";           // Variable per igualar la localitzacio de la DB
     static final String DB_DRV = "com.mysql.jdbc.Driver";                                           // Variable per igualar la el driver de la DB
-    static final String DB_USER = "admin_web";                                                          // Variable per igualar el usuari de la DB
-    static final String DB_PASSWD = "Alumne123";                                                    // Variable per igualar la contrasenya de la DB
+    static final String DB_USER = "User";                                                          // Variable per igualar el usuari de la DB
+    static final String DB_PASSWD = "Pwd";                                                    // Variable per igualar la contrasenya de la DB
 
     public DBConnection() {
         try {
