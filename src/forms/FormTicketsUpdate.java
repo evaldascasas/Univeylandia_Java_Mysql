@@ -23,13 +23,14 @@ public class FormTicketsUpdate extends javax.swing.JFrame {
 
     /**
      * Creates new form FormTicketsUpdate
+     * @param id_seleccionat
      */
     public FormTicketsUpdate(String id_seleccionat) {
-        this.setExtendedState(this.MAXIMIZED_BOTH);
+        //this.setExtendedState(this.MAXIMIZED_BOTH);
         initComponents();
         loadcombo();
         id_ticket = id_seleccionat;
-        String dades_ticket_sql = "select p.id, tp.nom, tp.id as id_tipus, p.descripcio, ap.mida, ap.tickets_viatges, ap.preu, p.estat from productes p left join atributs_producte ap on p.atributs = ap.id left join tipus_producte tp on ap.nom = tp.id where p.id = " + id_ticket ;
+        String dades_ticket_sql = "select p.id, tp.nom, tp.id as id_tipus, p.descripcio, ap.data_entrada, ap.mida, ap.tickets_viatges, ap.preu, p.estat from productes p left join atributs_producte ap on p.atributs = ap.id left join tipus_producte tp on ap.nom = tp.id where p.id = " + id_ticket ;
         System.out.println("id_seleccionat update: " + id_seleccionat);
         System.out.println(dades_ticket_sql);
         try{
@@ -37,8 +38,15 @@ public class FormTicketsUpdate extends javax.swing.JFrame {
             resultSet = statement.executeQuery(dades_ticket_sql);
             resultSet.first();
             selectTipus.setSelectedItem(resultSet.getString("nom"));
-            numViatges.setValue(resultSet.getInt("preu"));
+            preu.setValue(resultSet.getInt("preu"));
             numViatges.setValue(resultSet.getInt("tickets_viatges"));
+            if(resultSet.getString("data_entrada") != null){
+                dataEntrada.setText(resultSet.getString("data_entrada"));
+            }else{
+                dataEntrada.setVisible(false);
+                jLabel6.setVisible(false);
+            }
+            
             if(resultSet.getBoolean("estat")){
                 selectEstat.setSelectedItem("Actiu");
             }else{
@@ -82,6 +90,10 @@ public class FormTicketsUpdate extends javax.swing.JFrame {
         selectEstat = new javax.swing.JComboBox<>();
         numViatges = new javax.swing.JSpinner();
         preu = new javax.swing.JSpinner();
+        guardarButton = new javax.swing.JButton();
+        cancelarButton = new javax.swing.JButton();
+        jLabel6 = new javax.swing.JLabel();
+        dataEntrada = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -99,6 +111,24 @@ public class FormTicketsUpdate extends javax.swing.JFrame {
 
         selectEstat.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Actiu", "Desactivat"}));
 
+        guardarButton.setText("Guardar");
+        guardarButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                guardarButtonActionPerformed(evt);
+            }
+        });
+
+        cancelarButton.setText("Cancelar");
+        cancelarButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cancelarButtonActionPerformed(evt);
+            }
+        });
+
+        jLabel6.setText("Data entrada:");
+
+        dataEntrada.setText("null");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -113,9 +143,13 @@ public class FormTicketsUpdate extends javax.swing.JFrame {
                     .addComponent(jLabel2)
                     .addComponent(jLabel4)
                     .addComponent(jLabel5)
-                    .addComponent(jLabel3))
+                    .addComponent(jLabel3)
+                    .addComponent(guardarButton)
+                    .addComponent(jLabel6))
                 .addGap(37, 37, 37)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(dataEntrada, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(cancelarButton)
                     .addComponent(selectTipus, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(selectEstat, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(numViatges, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -143,11 +177,69 @@ public class FormTicketsUpdate extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel5)
                     .addComponent(selectEstat, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(141, Short.MAX_VALUE))
+                .addGap(13, 13, 13)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel6)
+                    .addComponent(dataEntrada, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 33, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(cancelarButton)
+                    .addComponent(guardarButton))
+                .addGap(39, 39, 39))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void cancelarButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelarButtonActionPerformed
+        FormTickets ft = new FormTickets();
+        this.setVisible(false);
+        ft.setVisible(true);
+    }//GEN-LAST:event_cancelarButtonActionPerformed
+
+    private void guardarButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_guardarButtonActionPerformed
+        // TODO add your handling code here:
+        try{
+            String data_entrada;
+            String update_atributs_ticket_query = "";
+            int tipus = selectTipus.getSelectedIndex()+1;
+            int nViatges = (Integer) numViatges.getValue();
+            int valorPreu = (Integer) preu.getValue();
+            if(dataEntrada.getText().equalsIgnoreCase(null)){
+                data_entrada = "'" + dataEntrada.getText() + "'";
+                update_atributs_ticket_query = "update atributs_producte set nom = " + tipus + ", tickets_viatges = " + nViatges + ", preu = " + valorPreu + ", data_entrada = " + data_entrada + " where id = " + id_ticket + ";";
+
+            }else{
+                update_atributs_ticket_query = "update atributs_producte set nom = " + tipus + ", tickets_viatges = " + nViatges + ", preu = " + valorPreu + " where id = " + id_ticket + ";";
+            }
+            int estat_ticket;
+            String estat_ticket_selector = (String) selectEstat.getSelectedItem();
+            if(estat_ticket_selector.equalsIgnoreCase("Actiu")){
+                estat_ticket = 1;
+            }else{
+                estat_ticket = 0;
+            }
+            String update_ticket_query = "update productes set Estat = " + estat_ticket + " where id = " + id_ticket + ";";
+            System.out.println(update_atributs_ticket_query);
+            System.out.println(update_ticket_query);
+            statement = DBConnection.getConnection().createStatement();
+            statement.executeUpdate(update_atributs_ticket_query);
+            statement.executeUpdate(update_ticket_query);
+            JOptionPane.showMessageDialog(this, "Ticket actualitzat correctament");
+        }catch (SQLException e){
+            System.out.println(e.getMessage());
+            JOptionPane.showMessageDialog(this, e);
+        }finally {
+            try {
+                statement.close();
+                DBConnection.disconnect();
+            } catch (SQLException e) {
+                System.out.println(e.getMessage());
+                JOptionPane.showMessageDialog(this, e);
+            }
+        }
+        
+    }//GEN-LAST:event_guardarButtonActionPerformed
 
     /**
      * @param args the command line arguments
@@ -200,11 +292,15 @@ public class FormTicketsUpdate extends javax.swing.JFrame {
 }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton cancelarButton;
+    private javax.swing.JTextField dataEntrada;
+    private javax.swing.JButton guardarButton;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
     private javax.swing.JSpinner numViatges;
     private javax.swing.JSpinner preu;
     private javax.swing.JComboBox<String> selectEstat;

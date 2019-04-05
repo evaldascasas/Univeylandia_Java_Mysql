@@ -21,7 +21,7 @@ public class FormTickets extends javax.swing.JFrame {
     String id_seleccionat;
     Statement statement = null;
     ResultSet resultSet = null;
-    String llistar_tickets_sql = "select p.id, tp.nom as tipus, p.descripcio, ap.mida, ap.tickets_viatges, ap.preu, p.estat from productes p left join atributs_producte ap on p.atributs = ap.id left join tipus_producte tp on ap.nom = tp.id where tp.id in (1,2,3,4,5,6,7) order by p.id desc limit 5000";
+    String llistar_tickets_sql = "select p.id, tp.nom as tipus, p.descripcio, ap.mida, ap.tickets_viatges, ap.preu, ap.data_entrada, p.estat from productes p left join atributs_producte ap on p.atributs = ap.id left join tipus_producte tp on ap.nom = tp.id where tp.id in (1,2,3,4,5,6,7) order by p.id desc limit 5000";
 
     /**
      * Creates new form FormTickets
@@ -151,7 +151,7 @@ public class FormTickets extends javax.swing.JFrame {
                     statement.executeUpdate(eliminar_producte_sql);
                     statement.close();
                     DBConnection.disconnect();
-                    JOptionPane.showMessageDialog(this, "Producte eliminat correctament");
+                    JOptionPane.showMessageDialog(this, "Ticket eliminat correctament");
                     llistar_tickets();
                 }else {
                     JOptionPane.showMessageDialog(this, statement.getUpdateCount());
