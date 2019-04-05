@@ -279,7 +279,7 @@ public class FormTicketsUpdate extends javax.swing.JFrame {
     try
     {
     statement = DBConnection.getConnection().createStatement();
-    resultTipus= statement.executeQuery("select nom from tipus_producte where id != 8;");
+    resultTipus= statement.executeQuery("select nom from tipus_producte where id in (1,2,3,4,5,6,7);");
     while(resultTipus.next()){                            
         selectTipus.addItem(resultTipus.getString(1));
     }
