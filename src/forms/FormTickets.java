@@ -125,10 +125,10 @@ public class FormTickets extends javax.swing.JFrame {
             try{
                 statement = DBConnection.getConnection().createStatement();
                 if (statement.getUpdateCount() != 0) {
-                    ResultSet atributs_sql = statement.executeQuery("select ap.id from productes p left join atributs_producte ap on p.atributs = ap.id where p.id = " + id_seleccionat + ";");
-                    int val =  ((Number) atributs_sql.getObject(0)).intValue();
-                    System.out.println(val);
-                    String eliminar_atributs_sql = "delete from atributs_producte where id = " + val + ";";
+                    //ResultSet atributs_sql = statement.executeQuery("select ap.id from productes p left join atributs_producte ap on p.atributs = ap.id where p.id = " + id_seleccionat + ";");
+                    //int val =  ((Number) atributs_sql.getObject(0)).intValue();
+                    //System.out.println(val);
+                    String eliminar_atributs_sql = "delete from atributs_producte where id = " + id_seleccionat + ";";
                     String eliminar_producte_sql = "delete from atributs_producte where id = " + id_seleccionat + ";";
                     statement.executeUpdate(eliminar_atributs_sql);
                     statement.executeUpdate(eliminar_producte_sql);
