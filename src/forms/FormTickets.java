@@ -46,6 +46,7 @@ public class FormTickets extends javax.swing.JFrame {
         deleteBtn = new javax.swing.JButton();
         jButton4 = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
+        refrescarButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -72,6 +73,13 @@ public class FormTickets extends javax.swing.JFrame {
 
         jLabel1.setText("Tickets");
 
+        refrescarButton.setText("Refrescar");
+        refrescarButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                refrescarButtonActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -87,11 +95,13 @@ public class FormTickets extends javax.swing.JFrame {
                         .addComponent(editBtn)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(deleteBtn)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 51, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(refrescarButton)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(jButton4))
                     .addGroup(layout.createSequentialGroup()
                         .addContainerGap()
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)))
+                        .addComponent(jScrollPane1)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -103,9 +113,10 @@ public class FormTickets extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(editBtn)
                     .addComponent(deleteBtn)
-                    .addComponent(jButton4))
+                    .addComponent(jButton4)
+                    .addComponent(refrescarButton))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 275, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 280, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -148,6 +159,10 @@ public class FormTickets extends javax.swing.JFrame {
             
         }
     }//GEN-LAST:event_deleteBtnActionPerformed
+
+    private void refrescarButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_refrescarButtonActionPerformed
+        llistar_tickets();
+    }//GEN-LAST:event_refrescarButtonActionPerformed
 
     /**
      * @param args the command line arguments
@@ -231,6 +246,7 @@ public class FormTickets extends javax.swing.JFrame {
     private javax.swing.JButton jButton4;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JButton refrescarButton;
     private javax.swing.JTable resultats;
     // End of variables declaration//GEN-END:variables
 }
