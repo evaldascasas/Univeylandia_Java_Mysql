@@ -18,9 +18,10 @@ import javax.swing.table.DefaultTableModel;
  * @author alumne
  */
 public class FormTickets extends javax.swing.JFrame {
+    String id_seleccionat;
     Statement statement = null;
     ResultSet resultSet = null;
-    String llistar_tickets_sql = "select p.id, tp.nom, p.descripcio, ap.mida, ap.tickets_viatges, ap.preu, p.estat from productes p left join atributs_producte ap on p.atributs = ap.id left join tipus_producte tp on ap.nom = tp.id where tp.id in (1,2,3,4,5,6,7) order by p.id desc limit 5000";
+    String llistar_tickets_sql = "select p.id, tp.nom as tipus, p.descripcio, ap.mida, ap.tickets_viatges, ap.preu, p.estat from productes p left join atributs_producte ap on p.atributs = ap.id left join tipus_producte tp on ap.nom = tp.id where tp.id in (1,2,3,4,5,6,7) order by p.id desc limit 5000";
 
     /**
      * Creates new form FormTickets
@@ -61,6 +62,11 @@ public class FormTickets extends javax.swing.JFrame {
         jScrollPane1.setViewportView(resultats);
 
         editBtn.setText("Modificar");
+        editBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                editBtnActionPerformed(evt);
+            }
+        });
 
         deleteBtn.setText("Eliminar");
         deleteBtn.addActionListener(new java.awt.event.ActionListener() {
@@ -127,7 +133,7 @@ public class FormTickets extends javax.swing.JFrame {
         // TODO add your handling code here:
         int columna = 0;
         int fila = resultats.getSelectedRow();
-        String id_seleccionat = resultats.getModel().getValueAt(columna, fila).toString();
+        id_seleccionat = resultats.getModel().getValueAt(fila, columna).toString();
         int dialogResult = -1;
         System.out.println(id_seleccionat);
         int dialogButton = JOptionPane.YES_NO_OPTION;
@@ -163,6 +169,16 @@ public class FormTickets extends javax.swing.JFrame {
     private void refrescarButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_refrescarButtonActionPerformed
         llistar_tickets();
     }//GEN-LAST:event_refrescarButtonActionPerformed
+
+    private void editBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editBtnActionPerformed
+        int columna = 0;
+        int fila = resultats.getSelectedRow();
+        id_seleccionat = resultats.getModel().getValueAt(fila, columna).toString();
+        System.out.println("id seleccionat_main: " + id_seleccionat);
+        FormTicketsUpdate ftu = new FormTicketsUpdate(id_seleccionat);
+        this.setVisible(false);
+        ftu.setVisible(true);
+    }//GEN-LAST:event_editBtnActionPerformed
 
     /**
      * @param args the command line arguments

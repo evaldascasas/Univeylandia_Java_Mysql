@@ -5,18 +5,63 @@
  */
 package forms;
 
+import connection.DBConnection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import javax.swing.JOptionPane;
+
 /**
  *
  * @author Jose
  */
 public class FormTicketsUpdate extends javax.swing.JFrame {
+    String id_ticket;
+    Statement statement = null;
+    ResultSet resultSet = null;
+    ResultSet resultTipus = null;
 
     /**
      * Creates new form FormTicketsUpdate
      */
-    public FormTicketsUpdate() {
+    public FormTicketsUpdate(String id_seleccionat) {
         this.setExtendedState(this.MAXIMIZED_BOTH);
         initComponents();
+        loadcombo();
+        id_ticket = id_seleccionat;
+        String dades_ticket_sql = "select p.id, tp.nom, tp.id as id_tipus, p.descripcio, ap.mida, ap.tickets_viatges, ap.preu, p.estat from productes p left join atributs_producte ap on p.atributs = ap.id left join tipus_producte tp on ap.nom = tp.id where p.id = " + id_ticket ;
+        System.out.println("id_seleccionat update: " + id_seleccionat);
+        System.out.println(dades_ticket_sql);
+        try{
+            statement = DBConnection.getConnection().createStatement();
+            resultSet = statement.executeQuery(dades_ticket_sql);
+            resultSet.first();
+            selectTipus.setSelectedItem(resultSet.getString("nom"));
+            numViatges.setValue(resultSet.getInt("preu"));
+            numViatges.setValue(resultSet.getInt("tickets_viatges"));
+            if(resultSet.getBoolean("estat")){
+                selectEstat.setSelectedItem("Actiu");
+            }else{
+                selectEstat.setSelectedItem("Desactivat");
+            }
+        }catch (SQLException e){
+            System.out.println(e.getMessage());
+            JOptionPane.showMessageDialog(this, e);
+        }finally {
+            try {
+                statement.close();
+                DBConnection.disconnect();
+            } catch (SQLException e) {
+                System.out.println(e.getMessage());
+                JOptionPane.showMessageDialog(this, e);
+            }
+        }
+        
+        
+    }
+
+    private FormTicketsUpdate() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     /**
@@ -28,17 +73,77 @@ public class FormTicketsUpdate extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jLabel1 = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
+        jLabel3 = new javax.swing.JLabel();
+        jLabel4 = new javax.swing.JLabel();
+        jLabel5 = new javax.swing.JLabel();
+        selectTipus = new javax.swing.JComboBox<>();
+        selectEstat = new javax.swing.JComboBox<>();
+        numViatges = new javax.swing.JSpinner();
+        preu = new javax.swing.JSpinner();
+
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+
+        jLabel1.setText("Modificat ticket");
+
+        jLabel2.setText("Número de viatges");
+
+        jLabel3.setText("Tipus");
+
+        jLabel4.setText("Preu");
+
+        jLabel5.setText("Estat");
+
+        selectTipus.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] {}));
+
+        selectEstat.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Actiu", "Desactivat"}));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 400, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(181, Short.MAX_VALUE)
+                .addComponent(jLabel1)
+                .addGap(173, 173, 173))
+            .addGroup(layout.createSequentialGroup()
+                .addGap(21, 21, 21)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel2)
+                    .addComponent(jLabel4)
+                    .addComponent(jLabel5)
+                    .addComponent(jLabel3))
+                .addGap(37, 37, 37)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(selectTipus, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(selectEstat, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(numViatges, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(preu, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 300, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel1)
+                .addGap(36, 36, 36)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel3)
+                    .addComponent(selectTipus, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel2)
+                    .addComponent(numViatges, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel4)
+                    .addComponent(preu, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel5)
+                    .addComponent(selectEstat, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(141, Short.MAX_VALUE))
         );
 
         pack();
@@ -78,7 +183,31 @@ public class FormTicketsUpdate extends javax.swing.JFrame {
             }
         });
     }
+    void loadcombo() {
+    try
+    {
+    statement = DBConnection.getConnection().createStatement();
+    resultTipus= statement.executeQuery("select nom from tipus_producte where id != 8;");
+    while(resultTipus.next()){                            
+        selectTipus.addItem(resultTipus.getString(1));
+    }
+    DBConnection.disconnect();
+    }
+    catch(Exception e)
+    {
+        System.out.println("Error"+e);
+    }    
+}
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
+    private javax.swing.JSpinner numViatges;
+    private javax.swing.JSpinner preu;
+    private javax.swing.JComboBox<String> selectEstat;
+    private javax.swing.JComboBox<String> selectTipus;
     // End of variables declaration//GEN-END:variables
 }
