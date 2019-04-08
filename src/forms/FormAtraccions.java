@@ -8,7 +8,10 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import javax.swing.JOptionPane;
+import javax.swing.JTable;
+import javax.swing.RowFilter;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableRowSorter;
 
 /**
  *
@@ -24,6 +27,8 @@ public class FormAtraccions extends javax.swing.JFrame {
     Connection connection = null;
     Statement statement = null;
     ResultSet resultSet = null;
+    
+    DefaultTableModel model = new DefaultTableModel();
 
     /**
      * Creates new form FormAtraccions
@@ -35,6 +40,73 @@ public class FormAtraccions extends javax.swing.JFrame {
         this.setTitle("Univeylandia Database Management");
         this.setExtendedState(this.MAXIMIZED_BOTH);
         llistar_atraccions();
+    }
+
+    public void llistar_atraccions() {
+        try {
+            ArrayList columnNames = new ArrayList();
+
+            connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWD);
+
+            connectionStatus.setText("Connectat com: " + DB_USER);
+
+            String query = "SELECT a.id, nom_atraccio, ta.tipus, data_inauguracio, altura_min, altura_max, accessibilitat, "
+                    + "acces_express, descripcio, path, votacions, a.created_at, a.updated_at "
+                    + "FROM atraccions a "
+                    + "INNER JOIN tipus_atraccions ta ON a.tipus_atraccio = ta.id ORDER BY a.id;";
+
+            statement = connection.createStatement();
+
+            resultSet = statement.executeQuery(query);
+
+            /* obtenir metadades del resultat de la consulta */
+            ResultSetMetaData md = resultSet.getMetaData();
+
+            /* comptar el numero de columnes del resultat */
+            int columnCount = md.getColumnCount();
+
+            /* emmagatzemar el nom de les columnes en un ArrayList */
+            for (int i = 1; i <= columnCount; i++) {
+                //System.out.print(md.getColumnName(i)+"\t");
+                columnNames.add(md.getColumnName(i));
+            }
+
+            /* Generar taula */
+            resultats.setModel(model);
+
+            for (int i = 0; i < columnNames.size(); i++) {
+                model.addColumn(columnNames.get(i));
+            }
+
+            /* mostrar les dades en la taula despres d'haver-les guardat en un Objecte[] */
+            while (resultSet.next()) {
+                Object[] row = new Object[columnCount];
+
+                for (int i = 0; i < columnCount; ++i) {
+                    //row.add(resultSet.getObject(i));
+                    row[i] = resultSet.getObject(i + 1);
+                }
+                //data.add(row);
+                model.addRow(row);
+            }
+
+            resultSet.close();
+
+            editBtn.setEnabled(false);
+            deleteBtn.setEnabled(false);
+
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+            JOptionPane.showMessageDialog(this, e);
+        }
+    }
+
+    private void filter(String query, JTable resultats) {
+        TableRowSorter<DefaultTableModel> sorter = new TableRowSorter<>(model);
+        
+        resultats.setRowSorter(sorter);
+        
+        sorter.setRowFilter(RowFilter.regexFilter(query));
     }
 
     /**
@@ -54,6 +126,7 @@ public class FormAtraccions extends javax.swing.JFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         resultats = new javax.swing.JTable();
         connectionStatus = new javax.swing.JLabel();
+        filterTxt = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -105,6 +178,12 @@ public class FormAtraccions extends javax.swing.JFrame {
 
         connectionStatus.setText("jLabel2");
 
+        filterTxt.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                filterTxtKeyReleased(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -119,7 +198,9 @@ public class FormAtraccions extends javax.swing.JFrame {
                         .addComponent(editBtn)
                         .addGap(18, 18, 18)
                         .addComponent(deleteBtn)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 85, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(filterTxt, javax.swing.GroupLayout.DEFAULT_SIZE, 84, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(enrereBtn)
                         .addContainerGap())
                     .addGroup(layout.createSequentialGroup()
@@ -143,7 +224,8 @@ public class FormAtraccions extends javax.swing.JFrame {
                     .addComponent(insertBtn)
                     .addComponent(editBtn)
                     .addComponent(deleteBtn)
-                    .addComponent(enrereBtn))
+                    .addComponent(enrereBtn)
+                    .addComponent(filterTxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 249, Short.MAX_VALUE)
                 .addContainerGap())
@@ -153,7 +235,10 @@ public class FormAtraccions extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void enrereBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_enrereBtnActionPerformed
-        System.exit(0);
+        FrameMain fm = new FrameMain();
+        this.setVisible(false);
+        this.dispose();
+        fm.setVisible(true);
     }//GEN-LAST:event_enrereBtnActionPerformed
 
     private void insertBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_insertBtnActionPerformed
@@ -214,6 +299,11 @@ public class FormAtraccions extends javax.swing.JFrame {
         deleteBtn.setEnabled(true);
     }//GEN-LAST:event_resultatsMouseClicked
 
+    private void filterTxtKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_filterTxtKeyReleased
+        String query = filterTxt.getText();
+        filter(query, resultats);
+    }//GEN-LAST:event_filterTxtKeyReleased
+
     /**
      * @param args the command line arguments
      */
@@ -249,71 +339,12 @@ public class FormAtraccions extends javax.swing.JFrame {
         });
     }
 
-    public void llistar_atraccions() {
-        try {
-            ArrayList columnNames = new ArrayList();
-
-            connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWD);
-
-            connectionStatus.setText("Connectat com: " + DB_USER);
-
-            String query = "SELECT a.id, nom_atraccio, ta.tipus, data_inauguracio, altura_min, altura_max, accessibilitat, "
-                    + "acces_express, descripcio, path, votacions, a.created_at, a.updated_at "
-                    + "FROM atraccions a "
-                    + "INNER JOIN tipus_atraccions ta ON a.tipus_atraccio = ta.id ORDER BY a.id;";
-
-            statement = connection.createStatement();
-
-            resultSet = statement.executeQuery(query);
-
-            /* obtenir metadades del resultat de la consulta */
-            ResultSetMetaData md = resultSet.getMetaData();
-
-            /* comptar el numero de columnes del resultat */
-            int columnCount = md.getColumnCount();
-
-            /* emmagatzemar el nom de les columnes en un ArrayList */
-            for (int i = 1; i <= columnCount; i++) {
-                //System.out.print(md.getColumnName(i)+"\t");
-                columnNames.add(md.getColumnName(i));
-            }
-
-            /* Generar taula */
-            DefaultTableModel model = new DefaultTableModel();
-            resultats.setModel(model);
-
-            for (int i = 0; i < columnNames.size(); i++) {
-                model.addColumn(columnNames.get(i));
-            }
-
-            /* mostrar les dades en la taula despres d'haver-les guardat en un Objecte[] */
-            while (resultSet.next()) {
-                Object[] row = new Object[columnCount];
-
-                for (int i = 0; i < columnCount; ++i) {
-                    //row.add(resultSet.getObject(i));
-                    row[i] = resultSet.getObject(i + 1);
-                }
-                //data.add(row);
-                model.addRow(row);
-            }
-
-            resultSet.close();
-            
-            editBtn.setEnabled(false);
-            deleteBtn.setEnabled(false);
-
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
-            JOptionPane.showMessageDialog(this, e);
-        }
-    }
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel connectionStatus;
     private javax.swing.JButton deleteBtn;
     private javax.swing.JButton editBtn;
     private javax.swing.JButton enrereBtn;
+    private javax.swing.JTextField filterTxt;
     private javax.swing.JButton insertBtn;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane jScrollPane1;
