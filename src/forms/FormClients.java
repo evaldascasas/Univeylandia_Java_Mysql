@@ -5,6 +5,8 @@
  */
 package forms;
 
+import connection.DBConnection;
+
 /**
  *
  * @author alumne
@@ -15,6 +17,7 @@ public class FormClients extends javax.swing.JFrame {
      * Creates new form FormClients
      */
     public FormClients() {
+        DBConnection.getConnection();
         initComponents();
     }
 
