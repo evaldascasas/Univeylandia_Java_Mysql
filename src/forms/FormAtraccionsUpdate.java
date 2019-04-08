@@ -1,18 +1,23 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
 package forms;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.PreparedStatement;
 import java.sql.Statement;
 import javax.swing.JOptionPane;
+import java.sql.SQLException;
 
 /**
  *
  * @author alumne
  */
-public class FormAtraccionsInsert extends javax.swing.JFrame {
+public class FormAtraccionsUpdate extends javax.swing.JFrame {
 
     static final String DB_URL = "jdbc:mysql://univeylandia.cat:3306/univeylandia_test2";
     static final String DB_DRV = "com.mysql.jdbc.Driver";
@@ -20,14 +25,21 @@ public class FormAtraccionsInsert extends javax.swing.JFrame {
     static final String DB_PASSWD = "Alumne123";
 
     Connection connection = null;
-    PreparedStatement statement = null;
+    Statement statement = null;
+    PreparedStatement prep = null;
     ResultSet resultSet = null;
+    ResultSet resultSet2 = null;
+
+    static String id_atraccio;
 
     /**
-     * Creates new form FormAtraccionsInsert
+     * Creates new form FormAtraccionsUpdate
+     *
+     * @param id_seleccionat
      */
-    public FormAtraccionsInsert() {
+    public FormAtraccionsUpdate(String id_seleccionat) {
         initComponents();
+        id_atraccio = id_seleccionat;
         carregarGui();
         this.setLocationRelativeTo(null);
         this.setTitle("Univeylandia Database Management");
@@ -51,23 +63,23 @@ public class FormAtraccionsInsert extends javax.swing.JFrame {
         jLabel4 = new javax.swing.JLabel();
         dataTxt = new javax.swing.JTextField();
         jLabel5 = new javax.swing.JLabel();
-        alturaMinTxt = new javax.swing.JTextField();
-        insertBtn = new javax.swing.JButton();
-        enrereBtn = new javax.swing.JButton();
-        jLabel6 = new javax.swing.JLabel();
-        alturaMaxTxt = new javax.swing.JTextField();
-        jLabel7 = new javax.swing.JLabel();
-        accessibilitatTxt = new javax.swing.JComboBox<>();
-        jLabel8 = new javax.swing.JLabel();
-        accesTxt = new javax.swing.JComboBox<>();
-        jLabel9 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         descTxt = new javax.swing.JTextArea();
+        jLabel6 = new javax.swing.JLabel();
+        alturaMinTxt = new javax.swing.JTextField();
+        jLabel7 = new javax.swing.JLabel();
+        alturaMaxTxt = new javax.swing.JTextField();
+        jLabel8 = new javax.swing.JLabel();
+        accessibilitatTxt = new javax.swing.JComboBox<>();
+        jLabel9 = new javax.swing.JLabel();
+        accesTxt = new javax.swing.JComboBox<>();
+        enrereBtn = new javax.swing.JButton();
+        modificarBtn = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         jLabel1.setFont(new java.awt.Font("Cantarell", 1, 36)); // NOI18N
-        jLabel1.setText("Atraccions - Inserir");
+        jLabel1.setText("Atraccions - Modificar");
 
         jLabel2.setText("Nom");
 
@@ -75,14 +87,25 @@ public class FormAtraccionsInsert extends javax.swing.JFrame {
 
         jLabel4.setText("Data inauguració (YYYY-mm-dd)");
 
-        jLabel5.setText("Altura mínima");
+        jLabel5.setText("Descripció");
 
-        insertBtn.setText("Inserir");
-        insertBtn.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                insertBtnActionPerformed(evt);
-            }
-        });
+        descTxt.setColumns(20);
+        descTxt.setRows(5);
+        jScrollPane1.setViewportView(descTxt);
+
+        jLabel6.setText("Altura mínima");
+
+        jLabel7.setText("Altura màxima");
+
+        jLabel8.setText("Accessibilitat");
+
+        accessibilitatTxt.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "No", "Si" }));
+        accessibilitatTxt.setSelectedIndex(-1);
+
+        jLabel9.setText("Accés exprés");
+
+        accesTxt.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "No", "Si" }));
+        accesTxt.setSelectedIndex(-1);
 
         enrereBtn.setText("Enrere");
         enrereBtn.addActionListener(new java.awt.event.ActionListener() {
@@ -91,57 +114,47 @@ public class FormAtraccionsInsert extends javax.swing.JFrame {
             }
         });
 
-        jLabel6.setText("Altura màxima");
-
-        jLabel7.setText("Accessibilitat");
-
-        accessibilitatTxt.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "No", "Si" }));
-        accessibilitatTxt.setSelectedIndex(-1);
-
-        jLabel8.setText("Accés exprés");
-
-        accesTxt.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "No", "Si" }));
-        accesTxt.setSelectedIndex(-1);
-
-        jLabel9.setText("Descripció");
-
-        descTxt.setColumns(20);
-        descTxt.setRows(5);
-        jScrollPane1.setViewportView(descTxt);
+        modificarBtn.setText("Modificar");
+        modificarBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                modificarBtnActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(insertBtn)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED))
+                    .addComponent(jLabel1)
                     .addGroup(layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 313, Short.MAX_VALUE)
+                                .addComponent(dataTxt, javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(tipusTxt, javax.swing.GroupLayout.Alignment.LEADING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(nomTxt, javax.swing.GroupLayout.Alignment.LEADING))
                             .addComponent(jLabel2)
                             .addComponent(jLabel3)
                             .addComponent(jLabel4)
-                            .addComponent(nomTxt)
-                            .addComponent(tipusTxt, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(dataTxt)
-                            .addComponent(jLabel9)
-                            .addComponent(jScrollPane1))
+                            .addComponent(jLabel5))
                         .addGap(61, 61, 61)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(jLabel9)
                             .addComponent(jLabel8)
-                            .addComponent(jLabel5)
-                            .addComponent(alturaMinTxt)
-                            .addComponent(jLabel6)
-                            .addComponent(alturaMaxTxt)
                             .addComponent(jLabel7)
-                            .addComponent(accessibilitatTxt, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(accesTxt, 0, 180, Short.MAX_VALUE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 12, Short.MAX_VALUE)))
+                            .addComponent(jLabel6)
+                            .addComponent(alturaMinTxt)
+                            .addComponent(alturaMaxTxt)
+                            .addComponent(accessibilitatTxt, 0, 180, Short.MAX_VALUE)
+                            .addComponent(accesTxt, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                .addContainerGap(78, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(modificarBtn)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(enrereBtn)
                 .addContainerGap())
         );
@@ -153,7 +166,7 @@ public class FormAtraccionsInsert extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
-                    .addComponent(jLabel5))
+                    .addComponent(jLabel6))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(nomTxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -161,7 +174,7 @@ public class FormAtraccionsInsert extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3)
-                    .addComponent(jLabel6))
+                    .addComponent(jLabel7))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(tipusTxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -169,23 +182,23 @@ public class FormAtraccionsInsert extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel4)
-                    .addComponent(jLabel7))
+                    .addComponent(jLabel8))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(dataTxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(accessibilitatTxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel8)
+                    .addComponent(jLabel5)
                     .addComponent(jLabel9))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(accesTxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(accesTxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 44, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(insertBtn)
-                    .addComponent(enrereBtn))
+                    .addComponent(enrereBtn)
+                    .addComponent(modificarBtn))
                 .addContainerGap())
         );
 
@@ -199,49 +212,46 @@ public class FormAtraccionsInsert extends javax.swing.JFrame {
         this.dispose();
     }//GEN-LAST:event_enrereBtnActionPerformed
 
-    private void insertBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_insertBtnActionPerformed
+    private void modificarBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_modificarBtnActionPerformed
         try {
             connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWD);
 
-            String query = "INSERT INTO atraccions (nom_atraccio, tipus_atraccio, data_inauguracio, altura_min, "
-                    + "altura_max, accessibilitat, acces_express, descripcio, path) VALUES (?,?,?,?,?,?,?,?,?)";
+            String query = "UPDATE atraccions SET nom_atraccio = ?, tipus_atraccio = ?, data_inauguracio = ?, altura_min = ?, "
+                    + "altura_max = ?, accessibilitat = ?, acces_express = ?, descripcio = ? WHERE id = " + id_atraccio + ";";
 
-            statement = connection.prepareStatement(query);
+            prep = connection.prepareStatement(query);
 
-            statement.setString(1, nomTxt.getText());
-            statement.setInt(2, tipusTxt.getSelectedIndex() + 1);
-            statement.setString(3, dataTxt.getText());
-            statement.setInt(4, Integer.parseInt(alturaMinTxt.getText()));
-            statement.setInt(5, Integer.parseInt(alturaMaxTxt.getText()));
-            statement.setString(6, String.valueOf(accessibilitatTxt.getSelectedIndex()));
-            statement.setString(7, String.valueOf(accesTxt.getSelectedIndex()));
-            statement.setString(8, descTxt.getText());
-            statement.setString(9, "NO");
+            prep.setString(1, nomTxt.getText());
+            prep.setInt(2, tipusTxt.getSelectedIndex() + 1);
+            prep.setString(3, dataTxt.getText());
+            prep.setInt(4, Integer.parseInt(alturaMinTxt.getText()));
+            prep.setInt(5, Integer.parseInt(alturaMaxTxt.getText()));
+            prep.setString(6, String.valueOf(accessibilitatTxt.getSelectedIndex()));
+            prep.setString(7, String.valueOf(accesTxt.getSelectedIndex()));
+            prep.setString(8, descTxt.getText());
 
-            int rowsInserted = statement.executeUpdate();
+            //prep.executeUpdate();
+            int rowsInserted = prep.executeUpdate();
+
             if (rowsInserted > 0) {
-                JOptionPane.showMessageDialog(this, "S'ha inserit un nou registre!");
+                JOptionPane.showMessageDialog(this, "S'ha modificat el registre!");
             }
-            
-            /* Tancar connexió i statement */
+
+            /* Tancar connexió i statement preparat */
             connection.close();
-            statement.close();
+            prep.close();
             
-            /* Buidar els camps del formulari */
-            nomTxt.setText("");
-            tipusTxt.setSelectedIndex(-1);
-            dataTxt.setText("");
-            alturaMinTxt.setText("");
-            alturaMaxTxt.setText("");
-            accessibilitatTxt.setSelectedIndex(-1);
-            accesTxt.setSelectedIndex(-1);
-            descTxt.setText("");
+            /* Tornar a la finestra anterior */
+            FormAtraccions fa = new FormAtraccions();
+            this.setVisible(false);
+            fa.setVisible(true);
+            this.dispose();
 
         } catch (SQLException e) {
             System.out.println(e.getMessage());
             JOptionPane.showMessageDialog(this, e);
         }
-    }//GEN-LAST:event_insertBtnActionPerformed
+    }//GEN-LAST:event_modificarBtnActionPerformed
 
     /**
      * @param args the command line arguments
@@ -260,42 +270,64 @@ public class FormAtraccionsInsert extends javax.swing.JFrame {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(FormAtraccionsInsert.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(FormAtraccionsUpdate.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(FormAtraccionsInsert.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(FormAtraccionsUpdate.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(FormAtraccionsInsert.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(FormAtraccionsUpdate.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(FormAtraccionsInsert.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(FormAtraccionsUpdate.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new FormAtraccionsInsert().setVisible(true);
+                new FormAtraccionsUpdate(id_atraccio).setVisible(true);
             }
         });
     }
 
     public void carregarGui() {
+        System.out.println(id_atraccio);
         try {
             connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWD);
 
             String tipus_atraccions_query = "SELECT tipus FROM tipus_atraccions";
 
-            Statement stmt = connection.createStatement();
+            statement = connection.createStatement();
 
-            resultSet = stmt.executeQuery(tipus_atraccions_query);
+            resultSet = statement.executeQuery(tipus_atraccions_query);
 
-            /* Carregar les dades de la SELECT en el ComboBox */
+            /* Omplir el ComboBox amb els noms dels tipus d'atraccions */
             while (resultSet.next()) {
                 tipusTxt.addItem(resultSet.getString("tipus"));
             }
 
-            /*connection.close();
+            String atraccio_dades_query = "SELECT a.nom_atraccio, ta.tipus, a.data_inauguracio, a.altura_min, "
+                    + "a.altura_max, a.accessibilitat, a.acces_express, a.descripcio "
+                    + "FROM atraccions a JOIN tipus_atraccions ta ON a.tipus_atraccio = ta.id WHERE a.id = " + id_atraccio + ";";
+
+            resultSet2 = statement.executeQuery(atraccio_dades_query);
+
+            resultSet2.first();
+
+            /* Omplir els camps amb les dades de la query */
+            nomTxt.setText(resultSet2.getString("nom_atraccio"));
+            tipusTxt.setSelectedItem(resultSet2.getString("tipus"));
+            dataTxt.setText(resultSet2.getString("data_inauguracio"));
+            alturaMinTxt.setText(resultSet2.getString("altura_min"));
+            alturaMaxTxt.setText(resultSet2.getString("altura_max"));
+            accessibilitatTxt.setSelectedIndex(resultSet2.getInt("accessibilitat"));
+            accesTxt.setSelectedIndex(resultSet2.getInt("acces_express"));
+            descTxt.setText(resultSet2.getString("descripcio"));
+
+            /* Tancar connexió, statements i resultSet */
+            connection.close();
             statement.close();
-            resultSet.close();*/
+            resultSet.close();
+            resultSet2.close();
+
         } catch (Exception e) {
             System.out.println(e.getMessage());
             JOptionPane.showMessageDialog(this, e);
@@ -310,7 +342,6 @@ public class FormAtraccionsInsert extends javax.swing.JFrame {
     private javax.swing.JTextField dataTxt;
     private javax.swing.JTextArea descTxt;
     private javax.swing.JButton enrereBtn;
-    private javax.swing.JButton insertBtn;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -321,6 +352,7 @@ public class FormAtraccionsInsert extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JButton modificarBtn;
     private javax.swing.JTextField nomTxt;
     private javax.swing.JComboBox<String> tipusTxt;
     // End of variables declaration//GEN-END:variables

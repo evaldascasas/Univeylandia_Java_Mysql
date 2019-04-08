@@ -30,10 +30,11 @@ public class FormAtraccions extends javax.swing.JFrame {
      */
     public FormAtraccions() {
         initComponents();
+        resultats.setDefaultEditor(Object.class, null);
         this.setLocationRelativeTo(null);
         this.setTitle("Univeylandia Database Management");
         this.setExtendedState(this.MAXIMIZED_BOTH);
-        inici();
+        llistar_atraccions();
     }
 
     /**
@@ -67,8 +68,18 @@ public class FormAtraccions extends javax.swing.JFrame {
         });
 
         editBtn.setText("Modificar");
+        editBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                editBtnActionPerformed(evt);
+            }
+        });
 
         deleteBtn.setText("Eliminar");
+        deleteBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                deleteBtnActionPerformed(evt);
+            }
+        });
 
         enrereBtn.setText("Enrere");
         enrereBtn.addActionListener(new java.awt.event.ActionListener() {
@@ -85,6 +96,11 @@ public class FormAtraccions extends javax.swing.JFrame {
 
             }
         ));
+        resultats.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                resultatsMouseClicked(evt);
+            }
+        });
         jScrollPane1.setViewportView(resultats);
 
         connectionStatus.setText("jLabel2");
@@ -137,16 +153,66 @@ public class FormAtraccions extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void enrereBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_enrereBtnActionPerformed
-        // TODO add your handling code here:
         System.exit(0);
     }//GEN-LAST:event_enrereBtnActionPerformed
 
     private void insertBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_insertBtnActionPerformed
-        // TODO add your handling code here:
         FormAtraccionsInsert fmi = new FormAtraccionsInsert();
         this.setVisible(false);
         fmi.setVisible(true);
     }//GEN-LAST:event_insertBtnActionPerformed
+
+    private void deleteBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteBtnActionPerformed
+        int columna = 0;
+
+        int fila = resultats.getSelectedRow();
+
+        String id_seleccionat = resultats.getModel().getValueAt(fila, columna).toString();
+
+        System.out.println(id_seleccionat);
+
+        try {
+            connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWD);
+
+            String query = "DELETE FROM atraccions WHERE id = " + id_seleccionat + ";";
+
+            statement = connection.createStatement();
+
+            statement.executeUpdate(query);
+
+            if (statement.getUpdateCount() != 0) {
+                JOptionPane.showMessageDialog(this, "S'ha ELIMINAT el registre correctament!");
+            } else {
+                JOptionPane.showMessageDialog(this, statement.getUpdateCount());
+            }
+
+            statement.close();
+            connection.close();
+
+            llistar_atraccions();
+
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            JOptionPane.showMessageDialog(this, e);
+        }
+    }//GEN-LAST:event_deleteBtnActionPerformed
+
+    private void editBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editBtnActionPerformed
+        int columna = 0;
+        int fila = resultats.getSelectedRow();
+        String id_seleccionat = resultats.getModel().getValueAt(fila, columna).toString();
+
+        System.out.println(id_seleccionat);
+
+        FormAtraccionsUpdate fau = new FormAtraccionsUpdate(id_seleccionat);
+        this.setVisible(false);
+        fau.setVisible(true);
+    }//GEN-LAST:event_editBtnActionPerformed
+
+    private void resultatsMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_resultatsMouseClicked
+        editBtn.setEnabled(true);
+        deleteBtn.setEnabled(true);
+    }//GEN-LAST:event_resultatsMouseClicked
 
     /**
      * @param args the command line arguments
@@ -183,7 +249,7 @@ public class FormAtraccions extends javax.swing.JFrame {
         });
     }
 
-    public void inici() {
+    public void llistar_atraccions() {
         try {
             ArrayList columnNames = new ArrayList();
 
@@ -191,25 +257,28 @@ public class FormAtraccions extends javax.swing.JFrame {
 
             connectionStatus.setText("Connectat com: " + DB_USER);
 
-            String query = "SELECT * FROM atraccions;";
+            String query = "SELECT a.id, nom_atraccio, ta.tipus, data_inauguracio, altura_min, altura_max, accessibilitat, "
+                    + "acces_express, descripcio, path, votacions, a.created_at, a.updated_at "
+                    + "FROM atraccions a "
+                    + "INNER JOIN tipus_atraccions ta ON a.tipus_atraccio = ta.id ORDER BY a.id;";
 
             statement = connection.createStatement();
 
             resultSet = statement.executeQuery(query);
 
-            // obtenir metadades del resultat de la consulta
+            /* obtenir metadades del resultat de la consulta */
             ResultSetMetaData md = resultSet.getMetaData();
 
-            // comptar el numero de columnes del resultat
+            /* comptar el numero de columnes del resultat */
             int columnCount = md.getColumnCount();
 
-            // emmagatzemar el nom de les columnes en un ArrayList
+            /* emmagatzemar el nom de les columnes en un ArrayList */
             for (int i = 1; i <= columnCount; i++) {
                 //System.out.print(md.getColumnName(i)+"\t");
                 columnNames.add(md.getColumnName(i));
             }
 
-            // Generar taula
+            /* Generar taula */
             DefaultTableModel model = new DefaultTableModel();
             resultats.setModel(model);
 
@@ -217,7 +286,7 @@ public class FormAtraccions extends javax.swing.JFrame {
                 model.addColumn(columnNames.get(i));
             }
 
-            // mostrar les dades en la taula despres d'haver-les guardat en un Objecte[]
+            /* mostrar les dades en la taula despres d'haver-les guardat en un Objecte[] */
             while (resultSet.next()) {
                 Object[] row = new Object[columnCount];
 
@@ -230,6 +299,9 @@ public class FormAtraccions extends javax.swing.JFrame {
             }
 
             resultSet.close();
+            
+            editBtn.setEnabled(false);
+            deleteBtn.setEnabled(false);
 
         } catch (SQLException e) {
             System.out.println(e.getMessage());
