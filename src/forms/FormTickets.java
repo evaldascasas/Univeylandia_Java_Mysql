@@ -21,13 +21,14 @@ public class FormTickets extends javax.swing.JFrame {
     String id_seleccionat;
     Statement statement = null;
     ResultSet resultSet = null;
-    String llistar_tickets_sql = "select p.id, tp.nom as tipus, p.descripcio, ap.mida, ap.tickets_viatges, ap.preu, ap.data_entrada, p.estat from productes p left join atributs_producte ap on p.atributs = ap.id left join tipus_producte tp on ap.nom = tp.id where tp.id in (1,2,3,4,5,6,7) order by p.id desc limit 5000";
+    String llistar_tickets_sql = "select p.id, tp.nom as tipus, p.descripcio, ap.mida, ap.tickets_viatges, ap.preu, ap.data_entrada, p.estat from productes p left join atributs_producte ap on p.atributs = ap.id left join tipus_producte tp on ap.nom = tp.id where tp.id in (1,2,3,4,5,6,7) and p.Estat = 1 order by p.id desc limit 5000";
 
     /**
      * Creates new form FormTickets
      */
     public FormTickets() {
         initComponents();
+        resultats.setDefaultEditor(Object.class, null);
         llistar_tickets();
         this.setExtendedState(this.MAXIMIZED_BOTH);
     }
@@ -137,22 +138,44 @@ public class FormTickets extends javax.swing.JFrame {
         int dialogResult = -1;
         System.out.println(id_seleccionat);
         int dialogButton = JOptionPane.YES_NO_OPTION;
-        dialogResult = JOptionPane.showConfirmDialog(null, "Estas segur de que vols eliminar el empleat " + "?", "CONFIRMACIO", dialogButton);
+        
+        /**/
+        
+        /**/
+        dialogResult = JOptionPane.showConfirmDialog(null, "Estas segur de que vols eliminar el ticket " + "?", "CONFIRMACIO", dialogButton);
         if(dialogResult == 0) {
             try{
                 statement = DBConnection.getConnection().createStatement();
                 if (statement.getUpdateCount() != 0) {
-                    //ResultSet atributs_sql = statement.executeQuery("select ap.id from productes p left join atributs_producte ap on p.atributs = ap.id where p.id = " + id_seleccionat + ";");
-                    //int val =  ((Number) atributs_sql.getObject(0)).intValue();
-                    //System.out.println(val);
-                    String eliminar_atributs_sql = "delete from atributs_producte where id = " + id_seleccionat + ";";
-                    String eliminar_producte_sql = "delete from atributs_producte where id = " + id_seleccionat + ";";
-                    statement.executeUpdate(eliminar_atributs_sql);
-                    statement.executeUpdate(eliminar_producte_sql);
-                    statement.close();
-                    DBConnection.disconnect();
-                    JOptionPane.showMessageDialog(this, "Ticket eliminat correctament");
-                    llistar_tickets();
+                    /*Check si està venut el producte*/
+                    /*ResultSet linia_venta_sql = statement.executeQuery("select count(id) from linia_ventes where producte = " + id_seleccionat + ";");
+                    linia_venta_sql.first();
+                    int lv = linia_venta_sql.getInt(1);*/
+                    /*Check si està en una cistella el producte*/
+                    /*ResultSet linia_cistella_sql = statement.executeQuery("select count(id) from linia_cistelles where producte = " + id_seleccionat + ";");
+                    linia_cistella_sql.first();*/
+                    //int lc = linia_cistella_sql.getInt(1);
+                    
+                    /*if(lv > 0){
+                        JOptionPane.showMessageDialog(this, "No es pot eliminar un ticket que s'ha venut");
+                    }else if(lc > 0){
+                        JOptionPane.showMessageDialog(this, "No es pot eliminar un ticket que està en una cistella");
+                    }else{*/
+                        /*ResultSet atributs_sql = statement.executeQuery("select atributs from productes where id = " + id_seleccionat + ";");
+                        atributs_sql.first();
+                        String val = atributs_sql.getString("atributs");
+                        String eliminar_atributs_sql = "delete from atributs_producte where id = " + val + ";";
+                        String eliminar_producte_sql = "delete from productes where id = " + id_seleccionat + ";";
+                        statement.executeUpdate(eliminar_atributs_sql);
+                        statement.executeUpdate(eliminar_producte_sql);*/
+                        String estat_producte_sql = "update productes set estat=0 where id = " + id_seleccionat + ";";
+                        statement.executeUpdate(estat_producte_sql);
+                        statement.close();
+                        DBConnection.disconnect();
+                        JOptionPane.showMessageDialog(this, "Ticket eliminat correctament");
+                        llistar_tickets();
+                    //}
+                    
                 }else {
                     JOptionPane.showMessageDialog(this, statement.getUpdateCount());
                 }

@@ -103,7 +103,7 @@ public class FormTicketsUpdate extends javax.swing.JFrame {
 
         jLabel3.setText("Tipus");
 
-        jLabel4.setText("Preu");
+        jLabel4.setText("Preu (€)");
 
         jLabel5.setText("Estat");
 
@@ -237,6 +237,9 @@ public class FormTicketsUpdate extends javax.swing.JFrame {
                 System.out.println(e.getMessage());
                 JOptionPane.showMessageDialog(this, e);
             }
+            FormTickets ft = new FormTickets();
+            this.setVisible(false);
+            ft.setVisible(true);
         }
         
     }//GEN-LAST:event_guardarButtonActionPerformed
