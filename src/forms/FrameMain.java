@@ -16,6 +16,7 @@ public class FrameMain extends javax.swing.JFrame {
      */
     public FrameMain() {
         initComponents();
+        this.setLocationRelativeTo(null);
     }
 
     /**
@@ -30,7 +31,6 @@ public class FrameMain extends javax.swing.JFrame {
         bClient = new javax.swing.JButton();
         bAtraccio = new javax.swing.JButton();
         bTicket = new javax.swing.JButton();
-        bConnectar = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -55,54 +55,41 @@ public class FrameMain extends javax.swing.JFrame {
             }
         });
 
-        bConnectar.setText("Connectar");
-        bConnectar.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                bConnectarActionPerformed(evt);
-            }
-        });
-
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(15, 15, 15)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(bConnectar)
-                    .addComponent(bTicket, javax.swing.GroupLayout.PREFERRED_SIZE, 366, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(bAtraccio, javax.swing.GroupLayout.PREFERRED_SIZE, 366, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(bClient, javax.swing.GroupLayout.PREFERRED_SIZE, 366, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(19, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(bClient, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(bTicket, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(bAtraccio, javax.swing.GroupLayout.DEFAULT_SIZE, 376, Short.MAX_VALUE))))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(112, 112, 112)
+                .addGap(90, 90, 90)
                 .addComponent(bClient)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(bAtraccio)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(bTicket)
                 .addGap(18, 18, 18)
-                .addComponent(bConnectar)
-                .addContainerGap(40, Short.MAX_VALUE))
+                .addComponent(bAtraccio)
+                .addGap(18, 18, 18)
+                .addComponent(bTicket)
+                .addContainerGap(92, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void bConnectarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bConnectarActionPerformed
-        // TODO add your handling code here:
-        
-    }//GEN-LAST:event_bConnectarActionPerformed
-
     private void bClientActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bClientActionPerformed
         FormClients FormClients = new FormClients();
         FormClients.setVisible(true);
         this.setVisible(false);
-        
-        
     }//GEN-LAST:event_bClientActionPerformed
 
     private void bAtraccioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bAtraccioActionPerformed
@@ -121,10 +108,6 @@ public class FrameMain extends javax.swing.JFrame {
      * @param args the command line arguments
      */
     public static void main(String args[]) {
-        
-        FrameMain FrameMain = new FrameMain();
-        FrameMain.setVisible(true);
-        
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
@@ -160,7 +143,6 @@ public class FrameMain extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton bAtraccio;
     private javax.swing.JButton bClient;
-    private javax.swing.JButton bConnectar;
     private javax.swing.JButton bTicket;
     // End of variables declaration//GEN-END:variables
 }
