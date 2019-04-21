@@ -24,15 +24,15 @@ import javax.swing.RowFilter;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableRowSorter;
 
-
 /**
  *
  * @author Ferran Climent - GRUP2 Sprint5
  */
 public class FormClients extends javax.swing.JFrame {
 
-    int posicioTaula [];                                                        //On es guardara la posicio que seleccionem
-   DefaultTableModel model = new DefaultTableModel();
+    int posicioTaula[];                                                        //On es guardara la posicio que seleccionem
+    DefaultTableModel model = new DefaultTableModel();
+
     /**
      * Creates new form FormClients
      */
@@ -41,14 +41,14 @@ public class FormClients extends javax.swing.JFrame {
         initComponents();
         cargarTaulaClient();                                                    //Cargar la taula amb la BD
         this.setExtendedState(MAXIMIZED_BOTH);                                  //Mostrar el programa a pantalla completa
-        
+
     }
-    
-    public void cargarTaulaClient(){
+
+    public void cargarTaulaClient() {
         DBConnection cc = new DBConnection();
         Connection conn = DBConnection.getConnection();
         Statement stmt = null;
-        
+
         try {
 
             ArrayList nomCol = new ArrayList();                                 //Declarar arraylist per guardar el nom de les columnes 
@@ -56,35 +56,35 @@ public class FormClients extends javax.swing.JFrame {
             stmt = conn.createStatement();                                      //Crear un STATEMENT amb la conexio 
 
             String consulta = "SELECT * FROM users WHERE  id_rol = '1'";
-   
-                ResultSet rs = stmt.executeQuery(consulta);                     //Executar la consulta amb el STATEMNT i guardar-ho al resultSet
 
-                ResultSetMetaData dades = rs.getMetaData();
+            ResultSet rs = stmt.executeQuery(consulta);                     //Executar la consulta amb el STATEMNT i guardar-ho al resultSet
 
-                int numCol = dades.getColumnCount();                            //Guardar el numero de columnes de la taula que fas la consulta
+            ResultSetMetaData dades = rs.getMetaData();
 
-                for (int i = 1; i <= numCol; i++) {                             //Recorrer tota la taula que i guardar-ho a la arraylist
-                    nomCol.add(dades.getColumnName(i));
+            int numCol = dades.getColumnCount();                            //Guardar el numero de columnes de la taula que fas la consulta
+
+            for (int i = 1; i <= numCol; i++) {                             //Recorrer tota la taula que i guardar-ho a la arraylist
+                nomCol.add(dades.getColumnName(i));
+            }
+
+            Object[] etiquetes = new Object[numCol];                        // Crear un OBJECTE amb el numero de columnes
+
+            c_taula.setModel(model);
+
+            for (int i = 0; i < nomCol.size(); i++) {                       //Afegir una columna amb tots els objectes de nomCol
+                model.addColumn(nomCol.get(i));
+            }
+
+            while (rs.next()) {
+                Object[] fila = new Object[numCol];                         //Afegir una fila amb tots els resultats del resultSet
+
+                for (int i = 0; i < numCol; i++) {
+                    fila[i] = rs.getObject(i + 1);
                 }
+                model.addRow(fila);
 
-                Object[] etiquetes = new Object[numCol];                        // Crear un OBJECTE amb el numero de columnes
-                
-                c_taula.setModel(model);
-
-                for (int i = 0; i < nomCol.size(); i++) {                       //Afegir una columna amb tots els objectes de nomCol
-                    model.addColumn(nomCol.get(i));
-                }
-
-                while (rs.next()) {
-                    Object[] fila = new Object[numCol];                         //Afegir una fila amb tots els resultats del resultSet
-
-                    for (int i = 0; i < numCol; i++) {
-                        fila[i] = rs.getObject(i + 1);
-                    }
-                    model.addRow(fila);
-
-                }
-                rs.close();
+            }
+            rs.close();
 
         } catch (SQLException e) {
             System.out.println(e.getMessage());                                 //Si existeix un error mostrar-ho per pantalla
@@ -98,12 +98,12 @@ public class FormClients extends javax.swing.JFrame {
             }
         }
     }
-    
+
     public void filter(String consulta, JTable c_taula) {
         TableRowSorter<DefaultTableModel> sorter = new TableRowSorter<>(model);
-        
+
         c_taula.setRowSorter(sorter);
-        
+
         sorter.setRowFilter(RowFilter.regexFilter(consulta));
     }
 
@@ -278,6 +278,11 @@ public class FormClients extends javax.swing.JFrame {
         });
 
         jButton1.setText("Enrere");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -461,14 +466,14 @@ public class FormClients extends javax.swing.JFrame {
         users.setSexe(c_sexe.getText());
         users.setTelefon(c_telefon.getText());
         users.setId_rol(1);
-        
+
         try {
             String resp = ClientMetodes.registrarClient(users);                 //Cridar al metode registrar client i passar el users
             p_status.setText(resp);                                             //Plenar el estat amb la resposta
         } catch (SQLException ex) {
             Logger.getLogger(FormClients.class.getName()).log(Level.SEVERE, null, ex);  //Mostrar error
-        }   
-        
+        }
+
         c_nom.setText("");                                                      //Buidar tots els camps per nova operacio
         c_cognom1.setText("");
         c_cognom2.setText("");
@@ -483,8 +488,8 @@ public class FormClients extends javax.swing.JFrame {
         c_numero_document.setText("");
         c_sexe.setText("");
         c_telefon.setText("");
-        
-         //cargarTaulaClient();                                                   //Cargar la taula per veure els cambis
+
+        //cargarTaulaClient();                                                   //Cargar la taula per veure els cambis
     }//GEN-LAST:event_b_registrarActionPerformed
 
     private void b_borrardadesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_b_borrardadesActionPerformed
@@ -508,7 +513,7 @@ public class FormClients extends javax.swing.JFrame {
     private void b_actualitzarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_b_actualitzarActionPerformed
         Client users = new Client();                                            //Crear un nou users de tipus client
         users.setNom(c_nom.getText());                                          //Agafar les variables dels texfields i enviar-les als users
-        users.setCognom1(c_cognom1.getText());  
+        users.setCognom1(c_cognom1.getText());
         users.setCognom2(c_cognom2.getText());
         users.setEmail(c_email.getText());
         users.setPassword(c_password.getText());
@@ -522,14 +527,14 @@ public class FormClients extends javax.swing.JFrame {
         users.setSexe(c_sexe.getText());
         users.setTelefon(c_telefon.getText());
         users.setId(Integer.parseInt(c_id.getText()));
-        
+
         try {
             String resp = ClientMetodes.actualitzarClient(users);               //Ennviar les dades al metode actualitzar client
             p_status.setText(resp);                                             //Plenar el estat amb la resposta
         } catch (SQLException ex) {
             Logger.getLogger(FormClients.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
+
         c_id.setText("");                                                       //Tornar tots els texfields buits per una nova operacio
         c_nom.setText("");
         c_cognom1.setText("");
@@ -545,8 +550,8 @@ public class FormClients extends javax.swing.JFrame {
         c_numero_document.setText("");
         c_sexe.setText("");
         c_telefon.setText("");
-        
-         cargarTaulaClient();                                                   //Cargar la taula de nou per veure els cambis
+
+        cargarTaulaClient();                                                   //Cargar la taula de nou per veure els cambis
     }//GEN-LAST:event_b_actualitzarActionPerformed
 
     private void b_cargardadesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_b_cargardadesActionPerformed
@@ -575,67 +580,65 @@ public class FormClients extends javax.swing.JFrame {
     }//GEN-LAST:event_c_ciutatActionPerformed
 
     private void b_cargarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_b_cargarActionPerformed
-        
+
         try {
-        
+
             posicioTaula = c_taula.getSelectedRows();                           //Iguales la array de la posicio de la taula a les files seleccionades
 
-            if(posicioTaula.length > 1) {                                       //Alerta per evitar errors de mes de una fila seleccionada
-                JOptionPane.showMessageDialog(null,"Nomes pots seleccionar una fila");
-                }else{
-                    String client_id = c_taula.getValueAt(c_taula.getSelectedRow(),0).toString(); //Agafar el valor del id de la taula
-                    String client_nom = c_taula.getValueAt(c_taula.getSelectedRow(),1).toString(); //Agafar el valor del nom de la taula
-                    String client_cognom1 = c_taula.getValueAt(c_taula.getSelectedRow(),2).toString(); //Agafar el valor del cognom1 de la taula
-                    String client_cognom2 = c_taula.getValueAt(c_taula.getSelectedRow(),3).toString(); //Agafar el valor del cognom2 de la taula
-                    String client_email = c_taula.getValueAt(c_taula.getSelectedRow(),4).toString(); //Agafar el valor del email de la taula
-                    String client_password = c_taula.getValueAt(c_taula.getSelectedRow(),6).toString(); //Agafar el valor del password de la taula
-                    String client_data = c_taula.getValueAt(c_taula.getSelectedRow(),7).toString(); //Agafar el valor del data de la taula
-                    String client_adreca = c_taula.getValueAt(c_taula.getSelectedRow(),8).toString(); //Agafar el valor del adreca de la taula
-                    String client_ciutat = c_taula.getValueAt(c_taula.getSelectedRow(),9).toString(); //Agafar el valor del ciutat de la taula
-                    String client_provincia = c_taula.getValueAt(c_taula.getSelectedRow(),10).toString(); //Agafar el valor del provincia de la taula
-                    String client_codi_postal = c_taula.getValueAt(c_taula.getSelectedRow(),11).toString(); //Agafar el valor del codi_postal de la taula
-                    String client_tipus_document = c_taula.getValueAt(c_taula.getSelectedRow(),12).toString(); //Agafar el valor del tipus_document de la taula
-                    String client_numero_document = c_taula.getValueAt(c_taula.getSelectedRow(),13).toString(); //Agafar el valor del numero_document de la taula
-                    String client_sexe = c_taula.getValueAt(c_taula.getSelectedRow(),14).toString(); //Agafar el valor del sexe de la taula
-                    String client_telefon = c_taula.getValueAt(c_taula.getSelectedRow(),15).toString(); //Agafar el valor del telfon de la taula
+            if (posicioTaula.length > 1) {                                       //Alerta per evitar errors de mes de una fila seleccionada
+                JOptionPane.showMessageDialog(null, "Nomes pots seleccionar una fila");
+            } else {
+                String client_id = c_taula.getValueAt(c_taula.getSelectedRow(), 0).toString(); //Agafar el valor del id de la taula
+                String client_nom = c_taula.getValueAt(c_taula.getSelectedRow(), 1).toString(); //Agafar el valor del nom de la taula
+                String client_cognom1 = c_taula.getValueAt(c_taula.getSelectedRow(), 2).toString(); //Agafar el valor del cognom1 de la taula
+                String client_cognom2 = c_taula.getValueAt(c_taula.getSelectedRow(), 3).toString(); //Agafar el valor del cognom2 de la taula
+                String client_email = c_taula.getValueAt(c_taula.getSelectedRow(), 4).toString(); //Agafar el valor del email de la taula
+                String client_password = c_taula.getValueAt(c_taula.getSelectedRow(), 6).toString(); //Agafar el valor del password de la taula
+                String client_data = c_taula.getValueAt(c_taula.getSelectedRow(), 7).toString(); //Agafar el valor del data de la taula
+                String client_adreca = c_taula.getValueAt(c_taula.getSelectedRow(), 8).toString(); //Agafar el valor del adreca de la taula
+                String client_ciutat = c_taula.getValueAt(c_taula.getSelectedRow(), 9).toString(); //Agafar el valor del ciutat de la taula
+                String client_provincia = c_taula.getValueAt(c_taula.getSelectedRow(), 10).toString(); //Agafar el valor del provincia de la taula
+                String client_codi_postal = c_taula.getValueAt(c_taula.getSelectedRow(), 11).toString(); //Agafar el valor del codi_postal de la taula
+                String client_tipus_document = c_taula.getValueAt(c_taula.getSelectedRow(), 12).toString(); //Agafar el valor del tipus_document de la taula
+                String client_numero_document = c_taula.getValueAt(c_taula.getSelectedRow(), 13).toString(); //Agafar el valor del numero_document de la taula
+                String client_sexe = c_taula.getValueAt(c_taula.getSelectedRow(), 14).toString(); //Agafar el valor del sexe de la taula
+                String client_telefon = c_taula.getValueAt(c_taula.getSelectedRow(), 15).toString(); //Agafar el valor del telfon de la taula
 
+                c_id.setText(client_id);                                    //Plenar els Textfield amb la variable corresponent
+                c_nom.setText(client_nom);                                  //Plenar els Textfield amb la variable corresponent
+                c_cognom1.setText(client_cognom1);                          //Plenar els Textfield amb la variable corresponent
+                c_cognom2.setText(client_cognom2);                          //Plenar els Textfield amb la variable corresponent
+                c_email.setText(client_email);                              //Plenar els Textfield amb la variable corresponent
+                c_password.setText(client_password);                        //Plenar els Textfield amb la variable corresponent
+                c_data_naixement2.setText(client_data);                     //Plenar els Textfield amb la variable corresponent
+                c_adreca.setText(client_adreca);                            //Plenar els Textfield amb la variable corresponent
+                c_ciutat.setText(client_ciutat);                            //Plenar els Textfield amb la variable corresponent
+                c_provincia.setText(client_provincia);                      //Plenar els Textfield amb la variable corresponent
+                c_codi_postal.setText(client_codi_postal);                  //Plenar els Textfield amb la variable corresponent
+                c_tipus_document.setText(client_tipus_document);            //Plenar els Textfield amb la variable corresponent
+                c_numero_document.setText(client_numero_document);          //Plenar els Textfield amb la variable corresponent
+                c_sexe.setText(client_sexe);                                //Plenar els Textfield amb la variable corresponent
+                c_telefon.setText(client_telefon);                          //Plenar els Textfield amb la variable corresponent
 
-                    c_id.setText(client_id);                                    //Plenar els Textfield amb la variable corresponent
-                    c_nom.setText(client_nom);                                  //Plenar els Textfield amb la variable corresponent
-                    c_cognom1.setText(client_cognom1);                          //Plenar els Textfield amb la variable corresponent
-                    c_cognom2.setText(client_cognom2);                          //Plenar els Textfield amb la variable corresponent
-                    c_email.setText(client_email);                              //Plenar els Textfield amb la variable corresponent
-                    c_password.setText(client_password);                        //Plenar els Textfield amb la variable corresponent
-                    c_data_naixement2.setText(client_data);                     //Plenar els Textfield amb la variable corresponent
-                    c_adreca.setText(client_adreca);                            //Plenar els Textfield amb la variable corresponent
-                    c_ciutat.setText(client_ciutat);                            //Plenar els Textfield amb la variable corresponent
-                    c_provincia.setText(client_provincia);                      //Plenar els Textfield amb la variable corresponent
-                    c_codi_postal.setText(client_codi_postal);                  //Plenar els Textfield amb la variable corresponent
-                    c_tipus_document.setText(client_tipus_document);            //Plenar els Textfield amb la variable corresponent
-                    c_numero_document.setText(client_numero_document);          //Plenar els Textfield amb la variable corresponent
-                    c_sexe.setText(client_sexe);                                //Plenar els Textfield amb la variable corresponent
-                    c_telefon.setText(client_telefon);                          //Plenar els Textfield amb la variable corresponent
-
-
-                    System.out.println(client_id);
-                }
-            }catch (HeadlessException ex){
-                JOptionPane.showMessageDialog(null, "Error: "+ex+"\nInténtelo nuevamente", " .::Error En la Operacion::." ,JOptionPane.ERROR_MESSAGE);  //Mostrar error amb JOption
-        }        
+                System.out.println(client_id);
+            }
+        } catch (HeadlessException ex) {
+            JOptionPane.showMessageDialog(null, "Error: " + ex + "\nInténtelo nuevamente", " .::Error En la Operacion::.", JOptionPane.ERROR_MESSAGE);  //Mostrar error amb JOption
+        }
     }//GEN-LAST:event_b_cargarActionPerformed
 
     private void b_eliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_b_eliminarActionPerformed
-        
+
         Client users = new Client();                                            //Crear un nou usuari de tipus client
         users.setId(Integer.parseInt(c_id.getText()));                          //Seleccionar el ID cargat i enviar-ho
-        
+
         try {
             String resp = ClientMetodes.eliminarClient(users);                  //Cridar al metode de eliminar client, passar el user
             p_status.setText(resp);
         } catch (SQLException ex) {
             Logger.getLogger(FormClients.class.getName()).log(Level.SEVERE, null, ex);          //Error 
         }
-        
+
         c_id.setText("");                                                       //Buidar els camps per noves operacions
         c_nom.setText("");
         c_cognom1.setText("");
@@ -651,25 +654,32 @@ public class FormClients extends javax.swing.JFrame {
         c_numero_document.setText("");
         c_sexe.setText("");
         c_telefon.setText("");
-        
-         cargarTaulaClient();                                                   //Cargar la taula de nou per veure els cambis
-        
+
+        cargarTaulaClient();                                                   //Cargar la taula de nou per veure els cambis
+
     }//GEN-LAST:event_b_eliminarActionPerformed
 
     private void filtertxtActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_filtertxtActionPerformed
-        
+
     }//GEN-LAST:event_filtertxtActionPerformed
 
     private void filtertxtKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_filtertxtKeyReleased
         // TODO add your handling code here:
         String consulta = filtertxt.getText();
-        filter("(?i)"+ consulta, c_taula); 
+        filter("(?i)" + consulta, c_taula);
     }//GEN-LAST:event_filtertxtKeyReleased
 
     private void c_recargartaulaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_c_recargartaulaActionPerformed
         // TODO add your handling code here:
         cargarTaulaClient();
     }//GEN-LAST:event_c_recargartaulaActionPerformed
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        FrameMain fm = new FrameMain();
+        this.setVisible(false);
+        this.dispose();
+        fm.setVisible(true);
+    }//GEN-LAST:event_jButton1ActionPerformed
 
     /**
      * @param args the command line arguments

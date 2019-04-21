@@ -4,6 +4,7 @@
  * and open the template in the editor.
  */
 package forms;
+
 import connection.DBConnection;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
@@ -18,53 +19,20 @@ import javax.swing.table.DefaultTableModel;
  * @author alumne
  */
 public class FormTickets extends javax.swing.JFrame {
+
+    String id_seleccionat;
     Statement statement = null;
     ResultSet resultSet = null;
-    String llistar_tickets_sql = "select tp.nom, p.descripcio, ap.mida, ap.tickets_viatges, ap.preu, p.estat from productes p left join atributs_producte ap on p.atributs = ap.id left join tipus_producte tp on ap.nom = tp.id where tp.id in (1,2,3,4,5,6,7) order by p.id desc";
+    String llistar_tickets_sql = "select p.id, tp.nom as tipus, p.descripcio, ap.mida, ap.tickets_viatges, ap.preu, ap.data_entrada, p.estat from productes p left join atributs_producte ap on p.atributs = ap.id left join tipus_producte tp on ap.nom = tp.id where tp.id in (1,2,3,4,5,6,7) and p.Estat = 1 order by p.id desc limit 5000";
 
     /**
      * Creates new form FormTickets
      */
     public FormTickets() {
-        try{
-            statement = DBConnection.getConnection().createStatement();
-            ArrayList columnNames = new ArrayList();
-            resultSet = statement.executeQuery(llistar_tickets_sql);
-                ResultSetMetaData md = resultSet.getMetaData();
-                int columnCount = md.getColumnCount();
-                for (int i = 1; i <= columnCount; i++) {
-                    columnNames.add(md.getColumnName(i));
-                }
-                DefaultTableModel model = new DefaultTableModel();
-                resultats.setModel(model);
-
-                for (int i = 0; i < columnNames.size(); i++) {
-                    model.addColumn(columnNames.get(i));
-                }
-                
-                while (resultSet.next()) {
-                    Object[] row = new Object[columnCount];
-                    for (int i = 0; i < columnCount; ++i) {
-                        row[i] = resultSet.getObject(i + 1);
-                    }
-                    model.addRow(row);
-                }
-                resultSet.close();
-            
-        }catch (SQLException e){
-            System.out.println(e.getMessage());
-            JOptionPane.showMessageDialog(this, e);
-        } finally {
-            try {
-                statement.close();
-                DBConnection.disconnect();
-            } catch (SQLException e) {
-                System.out.println(e.getMessage());
-                JOptionPane.showMessageDialog(this, e);
-            }
-        }
-        
         initComponents();
+        resultats.setDefaultEditor(Object.class, null);
+        llistar_tickets();
+        this.setExtendedState(this.MAXIMIZED_BOTH);
     }
 
     /**
@@ -78,11 +46,11 @@ public class FormTickets extends javax.swing.JFrame {
 
         jScrollPane1 = new javax.swing.JScrollPane();
         resultats = new javax.swing.JTable();
-        insertBtn = new javax.swing.JButton();
         editBtn = new javax.swing.JButton();
         deleteBtn = new javax.swing.JButton();
         jButton4 = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
+        refrescarButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -96,15 +64,30 @@ public class FormTickets extends javax.swing.JFrame {
         ));
         jScrollPane1.setViewportView(resultats);
 
-        insertBtn.setText("Inserir");
-
         editBtn.setText("Modificar");
+        editBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                editBtnActionPerformed(evt);
+            }
+        });
 
         deleteBtn.setText("Eliminar");
+        deleteBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                deleteBtnActionPerformed(evt);
+            }
+        });
 
         jButton4.setText("Enrere");
 
         jLabel1.setText("Tickets");
+
+        refrescarButton.setText("Refrescar");
+        refrescarButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                refrescarButtonActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -117,19 +100,18 @@ public class FormTickets extends javax.swing.JFrame {
                         .addComponent(jLabel1)
                         .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(37, 37, 37)
-                        .addComponent(insertBtn)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGap(110, 110, 110)
                         .addComponent(editBtn)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(deleteBtn)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(refrescarButton)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jButton4)))
+                        .addComponent(jButton4))
+                    .addGroup(layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(jScrollPane1)))
                 .addContainerGap())
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 375, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(19, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -138,17 +120,87 @@ public class FormTickets extends javax.swing.JFrame {
                 .addComponent(jLabel1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(insertBtn)
                     .addComponent(editBtn)
                     .addComponent(deleteBtn)
-                    .addComponent(jButton4))
+                    .addComponent(jButton4)
+                    .addComponent(refrescarButton))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 275, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 280, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void deleteBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteBtnActionPerformed
+        // TODO add your handling code here:
+        int columna = 0;
+        int fila = resultats.getSelectedRow();
+        id_seleccionat = resultats.getModel().getValueAt(fila, columna).toString();
+        int dialogResult = -1;
+        System.out.println(id_seleccionat);
+        int dialogButton = JOptionPane.YES_NO_OPTION;
+
+        dialogResult = JOptionPane.showConfirmDialog(null, "Estas segur de que vols eliminar el ticket " + "?", "CONFIRMACIO", dialogButton);
+        if (dialogResult == 0) {
+            try {
+                statement = DBConnection.getConnection().createStatement();
+                if (statement.getUpdateCount() != 0) {
+                    /*Check si està venut el producte*/
+ /*ResultSet linia_venta_sql = statement.executeQuery("select count(id) from linia_ventes where producte = " + id_seleccionat + ";");
+                    linia_venta_sql.first();
+                    int lv = linia_venta_sql.getInt(1);*/
+ /*Check si està en una cistella el producte*/
+ /*ResultSet linia_cistella_sql = statement.executeQuery("select count(id) from linia_cistelles where producte = " + id_seleccionat + ";");
+                    linia_cistella_sql.first();*/
+                    //int lc = linia_cistella_sql.getInt(1);
+
+                    /*if(lv > 0){
+                        JOptionPane.showMessageDialog(this, "No es pot eliminar un ticket que s'ha venut");
+                    }else if(lc > 0){
+                        JOptionPane.showMessageDialog(this, "No es pot eliminar un ticket que està en una cistella");
+                    }else{*/
+ /*ResultSet atributs_sql = statement.executeQuery("select atributs from productes where id = " + id_seleccionat + ";");
+                        atributs_sql.first();
+                        String val = atributs_sql.getString("atributs");
+                        String eliminar_atributs_sql = "delete from atributs_producte where id = " + val + ";";
+                        String eliminar_producte_sql = "delete from productes where id = " + id_seleccionat + ";";
+                        statement.executeUpdate(eliminar_atributs_sql);
+                        statement.executeUpdate(eliminar_producte_sql);*/
+                    String estat_producte_sql = "update productes set estat = 0 where id = " + id_seleccionat + ";";
+                    statement.executeUpdate(estat_producte_sql);
+                    statement.close();
+                    DBConnection.disconnect();
+                    JOptionPane.showMessageDialog(this, "Ticket eliminat correctament");
+                    llistar_tickets();
+                    //}
+
+                } else {
+                    JOptionPane.showMessageDialog(this, statement.getUpdateCount());
+                }
+            } catch (SQLException e) {
+                System.out.println(e.getMessage());
+                JOptionPane.showMessageDialog(this, e);
+            }
+
+        } else {
+
+        }
+    }//GEN-LAST:event_deleteBtnActionPerformed
+
+    private void refrescarButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_refrescarButtonActionPerformed
+        llistar_tickets();
+    }//GEN-LAST:event_refrescarButtonActionPerformed
+
+    private void editBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editBtnActionPerformed
+        int columna = 0;
+        int fila = resultats.getSelectedRow();
+        id_seleccionat = resultats.getModel().getValueAt(fila, columna).toString();
+        System.out.println("id seleccionat_main: " + id_seleccionat);
+        FormTicketsUpdate ftu = new FormTicketsUpdate(id_seleccionat);
+        this.setVisible(false);
+        ftu.setVisible(true);
+    }//GEN-LAST:event_editBtnActionPerformed
 
     /**
      * @param args the command line arguments
@@ -181,17 +233,66 @@ public class FormTickets extends javax.swing.JFrame {
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 new FormTickets().setVisible(true);
+
             }
         });
+    }
+
+    public void llistar_tickets() {
+        try {
+            statement = DBConnection.getConnection().createStatement();
+
+            ArrayList columnNames = new ArrayList();
+
+            resultSet = statement.executeQuery(llistar_tickets_sql);
+
+            ResultSetMetaData md = resultSet.getMetaData();
+
+            int columnCount = md.getColumnCount();
+
+            for (int i = 1; i <= columnCount; i++) {
+                columnNames.add(md.getColumnName(i));
+            }
+
+            DefaultTableModel model = new DefaultTableModel();
+
+            resultats.setModel(model);
+
+            for (int i = 0; i < columnNames.size(); i++) {
+                model.addColumn(columnNames.get(i));
+            }
+
+            while (resultSet.next()) {
+                Object[] row = new Object[columnCount];
+                for (int i = 0; i < columnCount; ++i) {
+                    row[i] = resultSet.getObject(i + 1);
+                }
+                model.addRow(row);
+            }
+
+            resultSet.close();
+
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+            JOptionPane.showMessageDialog(this, e);
+        } finally {
+            try {
+                statement.close();
+                DBConnection.disconnect();
+            } catch (SQLException e) {
+                System.out.println(e.getMessage());
+                JOptionPane.showMessageDialog(this, e);
+            }
+        }
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton deleteBtn;
     private javax.swing.JButton editBtn;
-    private javax.swing.JButton insertBtn;
     private javax.swing.JButton jButton4;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JButton refrescarButton;
     private javax.swing.JTable resultats;
     // End of variables declaration//GEN-END:variables
 }

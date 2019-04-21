@@ -8,13 +8,14 @@ import java.sql.Statement;
 
 /**
  *
- * @Evaldas Casas, Jose Febrer, Ferran Climent / GRUP-2 - Gestio d'atracions del parc  
+ * @Evaldas Casas, Jose Febrer, Ferran Climent / GRUP-2 - Gestio d'atracions del
+ * parc
  */
 public class DBConnection {
 
     static Connection conn = null;                                                                         // Variable per la conexio de tipus Connection
 
-    static final String DB_URL = "jdbc:mysql://localhost/univeylandia_test4";           // Variable per igualar la localitzacio de la DB
+    static final String DB_URL = "jdbc:mysql://univeylandia.cat/univeylandia_test2";           // Variable per igualar la localitzacio de la DB
     static final String DB_DRV = "com.mysql.jdbc.Driver";                                           // Variable per igualar la el driver de la DB
     static final String DB_USER = "super";                                                          // Variable per igualar el usuari de la DB
     static final String DB_PASSWD = "Alumne123";                                                    // Variable per igualar la contrasenya de la DB
@@ -39,16 +40,17 @@ public class DBConnection {
             System.out.println(ex.getMessage());
         }
     }
-    
-    public static ResultSet getTabla(String Consulta){
-        Connection cn=getConnection();
+
+    public static ResultSet getTabla(String Consulta) {
+        Connection cn = getConnection();
         Statement st;
-        ResultSet datos=null;
+        ResultSet datos = null;
         try {
-            st= cn.createStatement();
-            datos= st.executeQuery(Consulta);
+            st = cn.createStatement();
+            datos = st.executeQuery(Consulta);
+        } catch (SQLException e) {
+            System.out.println(e.toString());
         }
-        catch (SQLException e) { System.out.println(e.toString());
-        } return datos;
-    } 
+        return datos;
+    }
 }
