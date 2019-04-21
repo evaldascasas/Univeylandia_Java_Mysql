@@ -67,7 +67,6 @@ public class FormAtraccions extends javax.swing.JFrame {
 
             /* emmagatzemar el nom de les columnes en un ArrayList */
             for (int i = 1; i <= columnCount; i++) {
-                //System.out.print(md.getColumnName(i)+"\t");
                 columnNames.add(md.getColumnName(i));
             }
 
@@ -83,10 +82,8 @@ public class FormAtraccions extends javax.swing.JFrame {
                 Object[] row = new Object[columnCount];
 
                 for (int i = 0; i < columnCount; ++i) {
-                    //row.add(resultSet.getObject(i));
                     row[i] = resultSet.getObject(i + 1);
                 }
-                //data.add(row);
                 model.addRow(row);
             }
 
@@ -273,8 +270,8 @@ public class FormAtraccions extends javax.swing.JFrame {
 
             statement.close();
             connection.close();
-
-            llistar_atraccions();
+            
+            model.removeRow(fila);
 
         } catch (Exception e) {
             System.out.println(e.getMessage());
@@ -301,7 +298,7 @@ public class FormAtraccions extends javax.swing.JFrame {
 
     private void filterTxtKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_filterTxtKeyReleased
         String query = filterTxt.getText();
-        filter(query, resultats);
+        filter("(?i)"+query, resultats);
     }//GEN-LAST:event_filterTxtKeyReleased
 
     /**
