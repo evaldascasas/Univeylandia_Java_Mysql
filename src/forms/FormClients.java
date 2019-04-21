@@ -55,8 +55,8 @@ public class FormClients extends javax.swing.JFrame {
 
             stmt = conn.createStatement();                                      //Crear un STATEMENT amb la conexio 
 
-            String consulta = "SELECT * FROM users WHERE  id_rol = '1'";
-
+            String consulta = "SELECT * FROM users WHERE id_rol = 1";
+               //"SELECT id, nom, cognom1, cognom2, email, data_naixement, adreca, ciutat, provincia, codi_postal, tipus_document, numero_document, sexe, telefon FROM users WHERE  id_rol = 1"
             ResultSet rs = stmt.executeQuery(consulta);                     //Executar la consulta amb el STATEMNT i guardar-ho al resultSet
 
             ResultSetMetaData dades = rs.getMetaData();

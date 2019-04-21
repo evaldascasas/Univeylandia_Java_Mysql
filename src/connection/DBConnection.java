@@ -30,6 +30,12 @@ public class DBConnection {
     }
 
     public static Connection getConnection() {                                                             // Metode per cridar a la conexio
+        try {
+            Class.forName("com.mysql.jdbc.Driver");
+            conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWD);                         // Crear la variable per la conexio amb la DB
+        } catch (Exception ex) {
+            System.out.println(ex.getMessage());                                                    // Mostrar error si no es conecta
+        }
         return conn;
     }
 

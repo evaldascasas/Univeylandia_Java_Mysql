@@ -16,6 +16,7 @@ import javax.swing.JOptionPane;
  * @author Jose
  */
 public class FormTicketsUpdate extends javax.swing.JFrame {
+
     String id_ticket;
     Statement statement = null;
     ResultSet resultSet = null;
@@ -23,6 +24,7 @@ public class FormTicketsUpdate extends javax.swing.JFrame {
 
     /**
      * Creates new form FormTicketsUpdate
+     *
      * @param id_seleccionat
      */
     public FormTicketsUpdate(String id_seleccionat) {
@@ -30,32 +32,32 @@ public class FormTicketsUpdate extends javax.swing.JFrame {
         initComponents();
         loadcombo();
         id_ticket = id_seleccionat;
-        String dades_ticket_sql = "select p.id, tp.nom, tp.id as id_tipus, p.descripcio, ap.data_entrada, ap.mida, ap.tickets_viatges, ap.preu, p.estat from productes p left join atributs_producte ap on p.atributs = ap.id left join tipus_producte tp on ap.nom = tp.id where p.id = " + id_ticket ;
+        String dades_ticket_sql = "select p.id, tp.nom, tp.id as id_tipus, p.descripcio, ap.data_entrada, ap.mida, ap.tickets_viatges, ap.preu, p.estat from productes p left join atributs_producte ap on p.atributs = ap.id left join tipus_producte tp on ap.nom = tp.id where p.id = " + id_ticket;
         System.out.println("id_seleccionat update: " + id_seleccionat);
         System.out.println(dades_ticket_sql);
-        try{
+        try {
             statement = DBConnection.getConnection().createStatement();
             resultSet = statement.executeQuery(dades_ticket_sql);
             resultSet.first();
             selectTipus.setSelectedItem(resultSet.getString("nom"));
             preu.setValue(resultSet.getInt("preu"));
             numViatges.setValue(resultSet.getInt("tickets_viatges"));
-            if(resultSet.getString("data_entrada") != null){
+            if (resultSet.getString("data_entrada") != null) {
                 dataEntrada.setText(resultSet.getString("data_entrada"));
-            }else{
+            } else {
                 dataEntrada.setVisible(false);
                 jLabel6.setVisible(false);
             }
-            
-            if(resultSet.getBoolean("estat")){
+
+            if (resultSet.getBoolean("estat")) {
                 selectEstat.setSelectedItem("Actiu");
-            }else{
+            } else {
                 selectEstat.setSelectedItem("Desactivat");
             }
-        }catch (SQLException e){
+        } catch (SQLException e) {
             System.out.println(e.getMessage());
             JOptionPane.showMessageDialog(this, e);
-        }finally {
+        } finally {
             try {
                 statement.close();
                 DBConnection.disconnect();
@@ -64,8 +66,7 @@ public class FormTicketsUpdate extends javax.swing.JFrame {
                 JOptionPane.showMessageDialog(this, e);
             }
         }
-        
-        
+
     }
 
     private FormTicketsUpdate() {
@@ -199,24 +200,24 @@ public class FormTicketsUpdate extends javax.swing.JFrame {
 
     private void guardarButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_guardarButtonActionPerformed
         // TODO add your handling code here:
-        try{
+        try {
             String data_entrada;
             String update_atributs_ticket_query = "";
-            int tipus = selectTipus.getSelectedIndex()+1;
+            int tipus = selectTipus.getSelectedIndex() + 1;
             int nViatges = (Integer) numViatges.getValue();
             int valorPreu = (Integer) preu.getValue();
-            if(dataEntrada.getText().equalsIgnoreCase(null)){
+            if (dataEntrada.getText().equalsIgnoreCase(null)) {
                 data_entrada = "'" + dataEntrada.getText() + "'";
                 update_atributs_ticket_query = "update atributs_producte set nom = " + tipus + ", tickets_viatges = " + nViatges + ", preu = " + valorPreu + ", data_entrada = " + data_entrada + " where id = " + id_ticket + ";";
 
-            }else{
+            } else {
                 update_atributs_ticket_query = "update atributs_producte set nom = " + tipus + ", tickets_viatges = " + nViatges + ", preu = " + valorPreu + " where id = " + id_ticket + ";";
             }
             int estat_ticket;
             String estat_ticket_selector = (String) selectEstat.getSelectedItem();
-            if(estat_ticket_selector.equalsIgnoreCase("Actiu")){
+            if (estat_ticket_selector.equalsIgnoreCase("Actiu")) {
                 estat_ticket = 1;
-            }else{
+            } else {
                 estat_ticket = 0;
             }
             String update_ticket_query = "update productes set Estat = " + estat_ticket + " where id = " + id_ticket + ";";
@@ -226,10 +227,10 @@ public class FormTicketsUpdate extends javax.swing.JFrame {
             statement.executeUpdate(update_atributs_ticket_query);
             statement.executeUpdate(update_ticket_query);
             JOptionPane.showMessageDialog(this, "Ticket actualitzat correctament");
-        }catch (SQLException e){
+        } catch (SQLException e) {
             System.out.println(e.getMessage());
             JOptionPane.showMessageDialog(this, e);
-        }finally {
+        } finally {
             try {
                 statement.close();
                 DBConnection.disconnect();
@@ -241,7 +242,7 @@ public class FormTicketsUpdate extends javax.swing.JFrame {
             this.setVisible(false);
             ft.setVisible(true);
         }
-        
+
     }//GEN-LAST:event_guardarButtonActionPerformed
 
     /**
@@ -278,21 +279,19 @@ public class FormTicketsUpdate extends javax.swing.JFrame {
             }
         });
     }
+
     void loadcombo() {
-    try
-    {
-    statement = DBConnection.getConnection().createStatement();
-    resultTipus= statement.executeQuery("select nom from tipus_producte where id in (1,2,3,4,5,6,7);");
-    while(resultTipus.next()){                            
-        selectTipus.addItem(resultTipus.getString(1));
+        try {
+            statement = DBConnection.getConnection().createStatement();
+            resultTipus = statement.executeQuery("select nom from tipus_producte where id in (1,2,3,4,5,6,7);");
+            while (resultTipus.next()) {
+                selectTipus.addItem(resultTipus.getString(1));
+            }
+            DBConnection.disconnect();
+        } catch (Exception e) {
+            System.out.println("Error" + e);
+        }
     }
-    DBConnection.disconnect();
-    }
-    catch(Exception e)
-    {
-        System.out.println("Error"+e);
-    }    
-}
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton cancelarButton;

@@ -79,6 +79,11 @@ public class FormTickets extends javax.swing.JFrame {
         });
 
         jButton4.setText("Enrere");
+        jButton4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton4ActionPerformed(evt);
+            }
+        });
 
         jLabel1.setText("Tickets");
 
@@ -141,6 +146,8 @@ public class FormTickets extends javax.swing.JFrame {
         System.out.println(id_seleccionat);
         int dialogButton = JOptionPane.YES_NO_OPTION;
 
+        /**/
+ /**/
         dialogResult = JOptionPane.showConfirmDialog(null, "Estas segur de que vols eliminar el ticket " + "?", "CONFIRMACIO", dialogButton);
         if (dialogResult == 0) {
             try {
@@ -167,7 +174,7 @@ public class FormTickets extends javax.swing.JFrame {
                         String eliminar_producte_sql = "delete from productes where id = " + id_seleccionat + ";";
                         statement.executeUpdate(eliminar_atributs_sql);
                         statement.executeUpdate(eliminar_producte_sql);*/
-                    String estat_producte_sql = "update productes set estat = 0 where id = " + id_seleccionat + ";";
+                    String estat_producte_sql = "update productes set estat=0 where id = " + id_seleccionat + ";";
                     statement.executeUpdate(estat_producte_sql);
                     statement.close();
                     DBConnection.disconnect();
@@ -201,6 +208,13 @@ public class FormTickets extends javax.swing.JFrame {
         this.setVisible(false);
         ftu.setVisible(true);
     }//GEN-LAST:event_editBtnActionPerformed
+
+    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
+        FrameMain fm = new FrameMain();
+        this.setVisible(false);
+        this.dispose();
+        fm.setVisible(true);
+    }//GEN-LAST:event_jButton4ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -241,21 +255,14 @@ public class FormTickets extends javax.swing.JFrame {
     public void llistar_tickets() {
         try {
             statement = DBConnection.getConnection().createStatement();
-
             ArrayList columnNames = new ArrayList();
-
             resultSet = statement.executeQuery(llistar_tickets_sql);
-
             ResultSetMetaData md = resultSet.getMetaData();
-
             int columnCount = md.getColumnCount();
-
             for (int i = 1; i <= columnCount; i++) {
                 columnNames.add(md.getColumnName(i));
             }
-
             DefaultTableModel model = new DefaultTableModel();
-
             resultats.setModel(model);
 
             for (int i = 0; i < columnNames.size(); i++) {
@@ -269,7 +276,6 @@ public class FormTickets extends javax.swing.JFrame {
                 }
                 model.addRow(row);
             }
-
             resultSet.close();
 
         } catch (SQLException e) {
