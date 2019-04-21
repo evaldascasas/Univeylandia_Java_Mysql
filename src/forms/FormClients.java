@@ -152,6 +152,8 @@ public class FormClients extends javax.swing.JFrame {
         c_id = new javax.swing.JTextField();
         filtertxt = new javax.swing.JTextField();
         jLabel16 = new javax.swing.JLabel();
+        c_recargartaula = new javax.swing.JButton();
+        jButton1 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -268,6 +270,15 @@ public class FormClients extends javax.swing.JFrame {
 
         jLabel16.setText("Cercador per buscar:");
 
+        c_recargartaula.setText("RECARGAR TAULA");
+        c_recargartaula.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                c_recargartaulaActionPerformed(evt);
+            }
+        });
+
+        jButton1.setText("Enrere");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -320,13 +331,17 @@ public class FormClients extends javax.swing.JFrame {
                                     .addComponent(c_telefon)))))
                     .addGroup(layout.createSequentialGroup()
                         .addContainerGap()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(b_registrar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(b_actualitzar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(b_eliminar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(b_cargar, javax.swing.GroupLayout.DEFAULT_SIZE, 208, Short.MAX_VALUE)
-                            .addComponent(filtertxt)
-                            .addComponent(jLabel16, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(b_registrar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(b_actualitzar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(b_eliminar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(b_cargar, javax.swing.GroupLayout.DEFAULT_SIZE, 208, Short.MAX_VALUE)
+                                    .addComponent(filtertxt)
+                                    .addComponent(jLabel16, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                .addComponent(c_recargartaula, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 208, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(jButton1))))
                 .addGap(35, 35, 35)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jScrollPane2)
@@ -408,7 +423,9 @@ public class FormClients extends javax.swing.JFrame {
                 .addComponent(b_borrardades)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(b_cargardades)
-                .addGap(56, 56, 56)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(c_recargartaula)
+                .addGap(22, 22, 22)
                 .addComponent(b_registrar)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(b_actualitzar)
@@ -420,7 +437,8 @@ public class FormClients extends javax.swing.JFrame {
                 .addComponent(jLabel16)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(filtertxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(31, 31, 31))
+                .addGap(3, 3, 3)
+                .addComponent(jButton1))
         );
 
         pack();
@@ -648,6 +666,11 @@ public class FormClients extends javax.swing.JFrame {
         filter("(?i)"+ consulta, c_taula); 
     }//GEN-LAST:event_filtertxtKeyReleased
 
+    private void c_recargartaulaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_c_recargartaulaActionPerformed
+        // TODO add your handling code here:
+        cargarTaulaClient();
+    }//GEN-LAST:event_c_recargartaulaActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -702,11 +725,13 @@ public class FormClients extends javax.swing.JFrame {
     private javax.swing.JTextField c_numero_document;
     private javax.swing.JTextField c_password;
     private javax.swing.JTextField c_provincia;
+    private javax.swing.JButton c_recargartaula;
     private javax.swing.JTextField c_sexe;
     private javax.swing.JTable c_taula;
     private javax.swing.JTextField c_telefon;
     private javax.swing.JTextField c_tipus_document;
     private javax.swing.JTextField filtertxt;
+    private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
