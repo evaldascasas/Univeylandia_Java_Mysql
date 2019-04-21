@@ -55,9 +55,9 @@ public class FormClients extends javax.swing.JFrame {
 
             stmt = conn.createStatement();                                      //Crear un STATEMENT amb la conexio 
 
-            String consulta = "SELECT * FROM users WHERE id_rol = 1";
-               //"SELECT id, nom, cognom1, cognom2, email, data_naixement, adreca, ciutat, provincia, codi_postal, tipus_document, numero_document, sexe, telefon FROM users WHERE  id_rol = 1"
-            ResultSet rs = stmt.executeQuery(consulta);                     //Executar la consulta amb el STATEMNT i guardar-ho al resultSet
+            String consulta = "SELECT * FROM users WHERE  id_rol = 1";
+   
+                ResultSet rs = stmt.executeQuery(consulta);                     //Executar la consulta amb el STATEMNT i guardar-ho al resultSet
 
             ResultSetMetaData dades = rs.getMetaData();
 
@@ -67,7 +67,12 @@ public class FormClients extends javax.swing.JFrame {
                 nomCol.add(dades.getColumnName(i));
             }
 
-            Object[] etiquetes = new Object[numCol];                        // Crear un OBJECTE amb el numero de columnes
+                Object[] etiquetes = new Object[numCol];                        // Crear un OBJECTE amb el numero de columnes
+               
+                c_taula.removeAll();
+                model = new DefaultTableModel();
+                c_taula.setModel(model);
+               
 
             c_taula.setModel(model);
 
@@ -242,13 +247,13 @@ public class FormClients extends javax.swing.JFrame {
 
         c_taula.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
+                {},
+                {},
+                {},
+                {}
             },
             new String [] {
-                "Title 1", "Title 2", "Title 3", "Title 4"
+
             }
         ));
         jScrollPane2.setViewportView(c_taula);
@@ -488,8 +493,8 @@ public class FormClients extends javax.swing.JFrame {
         c_numero_document.setText("");
         c_sexe.setText("");
         c_telefon.setText("");
-
-        //cargarTaulaClient();                                                   //Cargar la taula per veure els cambis
+        
+        cargarTaulaClient();                                                   //Cargar la taula per veure els cambis
     }//GEN-LAST:event_b_registrarActionPerformed
 
     private void b_borrardadesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_b_borrardadesActionPerformed
