@@ -32,8 +32,7 @@ import javax.swing.table.TableRowSorter;
 public class FormClients extends javax.swing.JFrame {
 
     int posicioTaula [];                                                        //On es guardara la posicio que seleccionem
-    DefaultTableModel model = new DefaultTableModel();
-   
+   DefaultTableModel model = new DefaultTableModel();
     /**
      * Creates new form FormClients
      */
@@ -69,7 +68,7 @@ public class FormClients extends javax.swing.JFrame {
                 }
 
                 Object[] etiquetes = new Object[numCol];                        // Crear un OBJECTE amb el numero de columnes
-
+                
                 c_taula.setModel(model);
 
                 for (int i = 0; i < nomCol.size(); i++) {                       //Afegir una columna amb tots els objectes de nomCol
@@ -259,6 +258,11 @@ public class FormClients extends javax.swing.JFrame {
         filtertxt.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 filtertxtActionPerformed(evt);
+            }
+        });
+        filtertxt.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                filtertxtKeyReleased(evt);
             }
         });
 
@@ -462,7 +466,7 @@ public class FormClients extends javax.swing.JFrame {
         c_sexe.setText("");
         c_telefon.setText("");
         
-         cargarTaulaClient();                                                   //Cargar la taula per veure els cambis
+         //cargarTaulaClient();                                                   //Cargar la taula per veure els cambis
     }//GEN-LAST:event_b_registrarActionPerformed
 
     private void b_borrardadesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_b_borrardadesActionPerformed
@@ -635,9 +639,14 @@ public class FormClients extends javax.swing.JFrame {
     }//GEN-LAST:event_b_eliminarActionPerformed
 
     private void filtertxtActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_filtertxtActionPerformed
-        String consulta = filtertxt.getText();
-        filter(consulta, c_taula);
+        
     }//GEN-LAST:event_filtertxtActionPerformed
+
+    private void filtertxtKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_filtertxtKeyReleased
+        // TODO add your handling code here:
+        String consulta = filtertxt.getText();
+        filter("(?i)"+ consulta, c_taula); 
+    }//GEN-LAST:event_filtertxtKeyReleased
 
     /**
      * @param args the command line arguments
